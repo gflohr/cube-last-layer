@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Last Layer</title>
+		<style>
+body {
+	font-family: "Helvetica Neue", Arial, Sans-Serif;
+	display: flex;
+}
+
+nav {
+	width: 20rem;
+	height: 100vh;
+	top: 0;
+	position: sticky;
+	padding: 1rem;
+}
+twisty-player {
+	width: 18rem;
+	border: 1px solid grey;
+}
+main {
+	flex-grow: 1;
+	padding: 1rem;
+	max-width: 50%;
+}
+
+a {
+	text-decoration: none;
+	color: #5d85c1;
+}
+
+a:visited {
+	color: #5d85c1;
+}
+
+ul {
+	list-style-type: none;
+}
+
+li {
+	padding-left: 0;
+}
+		</style>
+	</head>
+	<body>
+		<nav>
+			<twisty-player
+				alg="x R' U R' D2 R U' R' D2 R2"
+				experimental-setup-anchor="end"
+				background="none"
+				experimental-stickering="COLL"
+				viewer-link="none"
+				front-view="bottom-left"
+				experimental-title="x R' U R' D2 R U' R' D2 R2"
+			></twisty-player>
+			<ul id="nav" class="nav">
+
+			</ul>
+		</nav>
+		<main id="main">
+			<h1>Last Layer</h1>
+		</main>
+		<script src="https://cdn.cubing.net/js/cubing/twisty" type="module"></script>
+		<script type="module">
+const algorithms = [
+	{
+		label_en: 'PLL',
+		class: 'pll',
+		stickering: 'PLL',
+		subsections: [
+			{
+				label_en: 'Edges Only',
+				cases: [
+					{
+						label: 'Ub',
+						probability: '1/18',
+					},
+				]
+			}
+		],
+	},
+];
+
+var ids = {
+	'nav': true,
+	'main': true,
+};
+
+window.addEventListener('load', () => {
+	const nav = document.getElementById('nav');
+	const main = document.getElementById('main');
+	function translatedName(label) {
+		return label + '_en';
+	}
+
+	function makeId(label) {
+		var id = label
+			.toLowerCase(label)
+			.replaceAll(new RegExp('[^a-zäöüß0-9]+', 'g'), '-')
+			.replace(new RegExp('^-+'), '')
+			.replace(new RegExp('-+$'), '');
+		var suffix = '';
+		while (ids.hasOwnProperty(id + '-' + suffix)) {
+			++suffix;
+		}
+		if (suffix) {
+			suffix = '-' + suffix;
+		}
+		ids[id + suffix] = true;
+
+		return id + suffix;
+	}
+
+	function addSection(section) {
+		const label = section[translatedName('label')];
+		const id = makeId(label);
+
+		const link = document.createElement('a');
+		link.setAttribute('href', '#' + id);
+		link.appendChild(document.createTextNode(label));
+		const li = document.createElement('li');
+		li.setAttribute('id', label);
+		li.appendChild(link);
+		nav.appendChild(li);
+
+		const h = document.createElement('h2');
+		h.setAttribute('id', id);
+		h.appendChild(document.createTextNode(label));
+		main.appendChild(h);
+	}
+
+	for (const section of algorithms) {
+		addSection(section);
+	}
+});
+
+// Add the twisty player.
+		</script>
+	</body>
+</html>
