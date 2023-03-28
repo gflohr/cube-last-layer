@@ -63,7 +63,7 @@ li {
 		</main>
 		<script src="https://cdn.cubing.net/js/cubing/twisty" type="module"></script>
 		<script type="module">
-const algorithms = [
+const sections = [
 	{
 		label_en: 'PLL',
 		class: 'pll',
@@ -75,6 +75,12 @@ const algorithms = [
 					{
 						label: 'Ub',
 						probability: '1/18',
+						edges: ['W', 'E', 'S'],
+						algorithms: [
+							{
+								notation: "R2 U (R U R' U') R' U' (R' U R')",
+							},
+						],
 					},
 				]
 			}
@@ -90,6 +96,11 @@ var ids = {
 window.addEventListener('load', () => {
 	const nav = document.getElementById('nav');
 	const main = document.getElementById('main');
+
+	for (const section of sections) {
+		addSection(section);
+	}
+
 	function translatedName(label) {
 		return label + '_en';
 	}
@@ -128,14 +139,123 @@ window.addEventListener('load', () => {
 		h.setAttribute('id', id);
 		h.appendChild(document.createTextNode(label));
 		main.appendChild(h);
+
+		const ul = document.createElement('ul');
+		ul.setAttribute('class', 'nav-section');
+		li.appendChild(ul);
+
+		for (const subsection of section.subsections) {
+			addSubsection(ul, subsection);
+		}
 	}
 
-	for (const section of algorithms) {
-		addSection(section);
+	function addSubsection(navList, subsection) {
+		const label = subsection[translatedName('label')];
+		const id = makeId(label);
+
+		const link = document.createElement('a');
+		link.setAttribute('href', '#' + id);
+		link.appendChild(document.createTextNode(label));
+		const li = document.createElement('li');
+		li.setAttribute('id', label);
+		li.appendChild(link);
+		navList.appendChild(li);
+
+		const ul = document.createElement('ul');
+		ul.setAttribute('class', 'nav-cases');
+		li.appendChild(ul);
+
+		const h = document.createElement('h3');
+		h.setAttribute('id', id);
+		h.appendChild(document.createTextNode(label));
+		main.appendChild(h);
+
+		for (const llcase of subsection.cases) {
+			addCase(ul, llcase);
+		}
+	}
+
+	function addCase(navList, llcase) {
+		const label = llcase['label'];
+		const id = makeId(label);
+
+		const link = document.createElement('a');
+		link.setAttribute('href', '#' + id);
+		link.appendChild(document.createTextNode(label));
+		const li = document.createElement('li');
+		li.setAttribute('id', label);
+		li.appendChild(link);
+		navList.appendChild(li);
+
+		const ul = document.createElement('ul');
+		ul.setAttribute('class', 'nav-cases');
+		li.appendChild(ul);
+
+		const h = document.createElement('h3');
+		h.setAttribute('id', id);
+		h.appendChild(document.createTextNode(label));
+		main.appendChild(h);
+
+		const container = document.createElement('div');
+		container.setAttribute('class', 'case');
+		const probability = document.createElement('div');
+		container.setAttribute('class', 'case-probability');
+		container.appendChild(document.createTextNode('p = ' + llcase.probability));
+
+		main.appendChild(container);
+
+		const defaultAlgorithms = llcase.algorithms.filter(a => a.default);
+		if (defaultAlgorithms.length) {
+			defaultAlgorithms[0].isDefault = true;
+		} else {
+			llcase.algorithms[0].isDefault = true;
+		}
+
+		for (const algorithm of llcase.algorithms) {
+			container.appendChild(addAlgorithm(llcase, algorithm, id));
+		}
+
+	}
+
+	function addAlgorithm(llcase, algorithm, id) {
+		const container = document.createElement('div');
+		container.setAttribute('class', 'case-algorithm-container');
+
+		const radioDiv = document.createElement('div');
+		radioDiv.setAttribute('class', 'case-default-button');
+		const radioButton = document.createElement('input');
+		radioButton.setAttribute('type', 'radio');
+		radioButton.setAttribute('name', id);
+		if (algorithm.isDefault) {
+			radioButton.setAttribute('checked', 'checked');
+		}
+		radioDiv.appendChild(radioButton);
+
+		const label = document.createElement('label');
+		label.setAttribute('for', id);
+		label.appendChild(document.createTextNode('Favourite'));
+		radioDiv.appendChild(label);
+		container.appendChild(radioDiv);
+
+		var algorithmDiv = document.createElement('div');
+		algorithmDiv.setAttribute('class', 'case-algorithm');
+		algorithmDiv.appendChild(document.createTextNode(algorithm.notation));
+		container.appendChild(algorithmDiv);
+
+		var canvasDiv = document.createElement('div');
+		canvasDiv.setAttribute('class', 'case-algorithm-canvas');
+		canvasDiv.appendChild(visualiseLastLayer(llcase, algorithm.rotation));
+		container.appendChild(canvasDiv);
+		
+		return container;
+	}
+
+	function visualiseLastLayer(llcase, rotation) {
+		var canvas = document.createElement('canvas');
+
+		return canvas;
 	}
 });
-
-// Add the twisty player.
 		</script>
 	</body>
 </html>
