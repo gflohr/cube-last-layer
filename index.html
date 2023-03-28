@@ -220,6 +220,54 @@ const corners = [
 			],
 		]
 	],
+	// Corner 2, UBL
+	[
+		// U
+		[
+			[
+				sideFaceWidth, sideFaceWidth,
+			],
+			[
+				sideFaceWidth + cubeletWidth, sideFaceWidth,
+			],
+			[
+				sideFaceWidth + cubeletWidth, sideFaceWidth + cubeletWidth,
+			],
+			[
+				sideFaceWidth, sideFaceWidth + cubeletWidth,
+			],
+		],
+		// B
+		[
+			[
+				0, 0,
+			],
+			[
+				sideFaceWidth + cubeletWidth, 0,
+			],
+			[
+				sideFaceWidth + cubeletWidth, sideFaceWidth,
+			],
+			[
+				sideFaceWidth, sideFaceWidth,
+			],
+		],
+		// L
+		[
+			[
+				0, 0,
+			],
+			[
+				sideFaceWidth, sideFaceWidth,
+			],
+			[
+				sideFaceWidth, sideFaceWidth + cubeletWidth,
+			],
+			[
+				0, sideFaceWidth + cubeletWidth,
+			],
+		]
+	],
 ];
 
 
@@ -401,8 +449,7 @@ window.addEventListener('load', () => {
 			}
 		}
 
-		for (var i = 0; i < 2; ++i) {
-			console.log(cube.corners[i]);
+		for (var i = 0; i < 3; ++i) {
 			drawCorner(ctx, i, cube.corners[i]);
 		}
 
@@ -445,6 +492,7 @@ window.addEventListener('load', () => {
 			}
 			ctx.lineTo(points[0][0], points[0][1]);
 			ctx.fillStyle = cubeColors[faces[j]];
+			console.log('square finished');
 			ctx.fill();
 			ctx.stroke();
 		}
