@@ -30,9 +30,6 @@ a {
 	color: #5d85c1;
 }
 
-canvas {
-	border: 1px solid red;
-}
 a:visited {
 	color: #5d85c1;
 }
@@ -99,19 +96,12 @@ var ids = {
 };
 
 const cubeColors = {
-	W: 'rgb(255, 255, 255)',
-	Y: 'rgb(255, 254, 85)',
-	R: 'rgb(235, 51, 35)',
-	O: 'rgb(240, 142, 53)',
-	G: 'rgb(117, 250, 76)',
-	B: 'rgb(50, 104, 246)',
-};
-
-const faceColors = {
-	B: 'B',
-	R: 'R',
-	F: 'G',
-	L: 'O',
+	U: 'rgb(255, 255, 255)', // white
+	D: 'rgb(255, 254, 85)',  // yellow
+	R: 'rgb(235, 51, 35)',   // red
+	L: 'rgb(240, 142, 53)',  // orange
+	F: 'rgb(117, 250, 76)',  // green
+	B: 'rgb(50, 104, 246)',  // blue
 };
 
 const faceIndices = {
@@ -388,14 +378,15 @@ window.addEventListener('load', () => {
 				]
 			]
 		];
-		const pos = corner[0];
-		const rot = corner[1];
+
 		const clockwise = i & 1 ? true : false;
+		var faces = clockwise ? corner[0].reverse() : corner[0];
+		const rot = corner[1];
 
 		const squares = corners[i];
+		faces = cycle(faces, rot);
 		for (var j = 0; j < squares.length; ++j) {
 			const points = squares[j];
-			console.log(points);
 			ctx.beginPath();
 			ctx.moveTo(points[0][0], points[0][1]);
 			for (var k = 1; k < points.length; ++k) {
@@ -403,6 +394,10 @@ window.addEventListener('load', () => {
 			}
 			ctx.lineTo(points[0][0], points[0][1]);
 			ctx.stroke();
+			ctx.fillStyle = cubeColors[faces[j]];
+			ctx.fill();
+			console.log('Face: ' + faces[j]);
+			console.log('Color: ' + cubeColors[faces[j]]);
 		}
 	}
 });
