@@ -116,7 +116,7 @@ const cubeHeight = cubeWidth;
 const sideFaceWidth = 10;
 const cubeletWidth = (cubeWidth - 2 * sideFaceWidth) / 3;
 
-const corners = [
+const cubeCorners = [
 	// Corner 0, UFR
 	[
 		// U
@@ -500,7 +500,7 @@ window.addEventListener('load', () => {
 		}
 
 		for (var i = 0; i < 4; ++i) {
-			drawCorner(ctx, i, cube.corners[i]);
+			drawCubelet(ctx, cube.corners[i], cubeCorners[i]);
 		}
 
 		return canvas;
@@ -526,12 +526,10 @@ window.addEventListener('load', () => {
 		return cube;
 	}
 
-	function drawCorner(ctx, i, corner) {
-		const clockwise = i & 1 ? true : false;
-		var faces = corner[0];
-		const rot = corner[1];
+	function drawCubelet(ctx, cubelet, squares) {
+		var faces = cubelet[0];
+		const rot = cubelet[1];
 
-		const squares = corners[i];
 		faces = cycle(faces, rot);
 		for (var j = 0; j < squares.length; ++j) {
 			const points = squares[j];
