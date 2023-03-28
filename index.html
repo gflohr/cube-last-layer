@@ -30,6 +30,9 @@ a {
 	color: #5d85c1;
 }
 
+canvas {
+	border: 1px solid red;
+}
 a:visited {
 	color: #5d85c1;
 }
@@ -49,7 +52,7 @@ li {
 				alg="x R' U R' D2 R U' R' D2 R2"
 				experimental-setup-anchor="end"
 				background="none"
-				experimental-stickering="COLL"
+				x-experimental-stickering="COLL"
 				viewer-link="none"
 				front-view="bottom-left"
 				experimental-title="x R' U R' D2 R U' R' D2 R2"
@@ -63,6 +66,8 @@ li {
 		</main>
 		<script src="https://cdn.cubing.net/js/cubing/twisty" type="module"></script>
 		<script type="module">
+"use strict";
+
 const sections = [
 	{
 		label_en: 'PLL',
@@ -75,7 +80,7 @@ const sections = [
 					{
 						label: 'Ub',
 						probability: '1/18',
-						edges: ['W', 'E', 'S'],
+						swapEdges: [['UL', 'UR', 'UF']],
 						algorithms: [
 							{
 								notation: "R2 U (R U R' U') R' U' (R' U R')",
@@ -89,9 +94,38 @@ const sections = [
 ];
 
 var ids = {
-	'nav': true,
-	'main': true,
+	nav: true,
+	main: true,
 };
+
+const cubeColors = {
+	W: 'rgb(255, 255, 255)',
+	Y: 'rgb(255, 254, 85)',
+	R: 'rgb(235, 51, 35)',
+	O: 'rgb(240, 142, 53)',
+	G: 'rgb(117, 250, 76)',
+	B: 'rgb(50, 104, 246)',
+};
+
+const faceColors = {
+	B: 'B',
+	R: 'R',
+	F: 'G',
+	L: 'O',
+};
+
+const faceIndices = {
+	B: 0,
+	R: 1,
+	F: 2,
+	L: 3,
+};
+
+const cubeWidth = 110;
+const cubeHeight = cubeWidth;
+const sideFaceWidth = 10;
+const cubeletWidth = (cubeWidth - 2 * sideFaceWidth) / 3;
+
 
 window.addEventListener('load', () => {
 	const nav = document.getElementById('nav');
@@ -214,7 +248,6 @@ window.addEventListener('load', () => {
 		for (const algorithm of llcase.algorithms) {
 			container.appendChild(addAlgorithm(llcase, algorithm, id));
 		}
-
 	}
 
 	function addAlgorithm(llcase, algorithm, id) {
@@ -253,7 +286,124 @@ window.addEventListener('load', () => {
 	function visualiseLastLayer(llcase, rotation) {
 		var canvas = document.createElement('canvas');
 
+		canvas.setAttribute('width', cubeWidth);
+		canvas.setAttribute('height', cubeHeight);
+
+		if (!canvas.getContext) return canvas;
+
+		const ctx = canvas.getContext('2d');
+
+		var cube = {
+			edges: [['UF', 0], ['UL', 0], ['UB', 0], ['UR', 0]],
+			corners: [['UFR', 0], ['UFL', 0], ['UBL', 0], ['UBR', 0]],
+		};
+
+		if (rotation) cube = rotateCube(cube, rotation);
+		if (llcase.swapEdges) {
+			for (const cycle of llcase.swapEdges) {
+				cube = swapEdges(cube, cycle);
+			}
+		}
+
+		for (var i = 0; i < 1; ++i) {
+			drawCorner(ctx, i, cube.corners[i]);
+		}
+
 		return canvas;
+	}
+
+	function rotateCube(cube, rotation) {
+		cube.edges = cycle(cube.edges, rotation);
+		cube.corners = cycle(cube.corners, rotation);
+
+		return cube;
+	}
+
+	function cycle(array, times) {
+		const newArray = [];
+		for (var i = 0; i < array.length; ++i) {
+			newArray[i] = array[(i + array.length - times) % array.length];
+		}
+
+		return newArray;
+	}
+
+	function swapEdges(cube, cycle) {
+		return cube;
+	}
+
+	function drawCorner(ctx, i, corner) {
+		const corners = [
+			// Corner 0, UFR
+			[
+				// U
+				[
+					[
+						cubeWidth - sideFaceWidth - cubeletWidth,
+						cubeWidth - sideFaceWidth - cubeletWidth,
+					],
+					[
+						cubeWidth - sideFaceWidth,
+						cubeWidth - sideFaceWidth - cubeletWidth,
+					],
+					[	cubeWidth - sideFaceWidth, cubeWidth - sideFaceWidth,
+					],
+					[
+						cubeWidth - sideFaceWidth - cubeletWidth,
+						cubeWidth - sideFaceWidth,
+					],
+				],
+				// R
+				[
+					[
+						cubeWidth - sideFaceWidth,
+						cubeWidth - sideFaceWidth - cubeletWidth,
+					],
+					[
+						cubeWidth, cubeWidth - sideFaceWidth - cubeletWidth,
+					],
+					[
+						cubeWidth, cubeWidth,
+					],
+					[
+						cubeWidth - sideFaceWidth, cubeWidth - sideFaceWidth
+					]
+				],
+				// F
+				[
+					[
+						cubeWidth - cubeletWidth - sideFaceWidth,
+						cubeWidth - sideFaceWidth,
+					],
+					[
+						cubeWidth - sideFaceWidth, cubeWidth - sideFaceWidth,
+					],
+					[
+						cubeWidth, cubeWidth,
+					],
+					[
+						cubeWidth - cubeletWidth - sideFaceWidth,
+						cubeWidth,
+					]
+				]
+			]
+		];
+		const pos = corner[0];
+		const rot = corner[1];
+		const clockwise = i & 1 ? true : false;
+
+		const squares = corners[i];
+		for (var j = 0; j < squares.length; ++j) {
+			const points = squares[j];
+			console.log(points);
+			ctx.beginPath();
+			ctx.moveTo(points[0][0], points[0][1]);
+			for (var k = 1; k < points.length; ++k) {
+				ctx.lineTo(points[k][0], points[k][1]);
+			}
+			ctx.lineTo(points[0][0], points[0][1]);
+			ctx.stroke();
+		}
 	}
 });
 		</script>
