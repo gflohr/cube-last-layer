@@ -268,6 +268,56 @@ const corners = [
 			],
 		]
 	],
+	// Corner 3, UBR.
+	[
+		// U
+		[
+			[
+				cubeWidth - sideFaceWidth - cubeletWidth, sideFaceWidth,
+			],
+			[
+				cubeWidth - sideFaceWidth, sideFaceWidth,
+			],
+			[
+				cubeWidth - sideFaceWidth, sideFaceWidth + cubeletWidth,
+			],
+			[
+				cubeWidth - sideFaceWidth - cubeletWidth,
+				sideFaceWidth + cubeletWidth,
+			],
+		],
+		// B
+		[
+			[
+				cubeWidth - sideFaceWidth - cubeletWidth,
+				0,
+			],
+			[
+				cubeWidth, 0,
+			],
+			[
+				cubeWidth - sideFaceWidth, sideFaceWidth,
+			],
+			[
+				cubeWidth - sideFaceWidth - cubeletWidth, sideFaceWidth,
+			],
+		],
+		// R
+		[
+			[
+				cubeWidth, 0,
+			],
+			[
+				cubeWidth, sideFaceWidth + cubeletWidth,
+			],
+			[
+				cubeWidth - sideFaceWidth, sideFaceWidth + cubeletWidth,
+			],
+			[
+				cubeWidth - sideFaceWidth, sideFaceWidth,
+			]
+		]
+	],
 ];
 
 
@@ -449,7 +499,7 @@ window.addEventListener('load', () => {
 			}
 		}
 
-		for (var i = 0; i < 3; ++i) {
+		for (var i = 0; i < 4; ++i) {
 			drawCorner(ctx, i, cube.corners[i]);
 		}
 
@@ -492,7 +542,6 @@ window.addEventListener('load', () => {
 			}
 			ctx.lineTo(points[0][0], points[0][1]);
 			ctx.fillStyle = cubeColors[faces[j]];
-			console.log('square finished');
 			ctx.fill();
 			ctx.stroke();
 		}
