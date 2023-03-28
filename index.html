@@ -116,6 +116,112 @@ const cubeHeight = cubeWidth;
 const sideFaceWidth = 10;
 const cubeletWidth = (cubeWidth - 2 * sideFaceWidth) / 3;
 
+const corners = [
+	// Corner 0, UFR
+	[
+		// U
+		[
+			[
+				cubeWidth - sideFaceWidth - cubeletWidth,
+				cubeWidth - sideFaceWidth - cubeletWidth,
+			],
+			[
+				cubeWidth - sideFaceWidth,
+				cubeWidth - sideFaceWidth - cubeletWidth,
+			],
+			[	cubeWidth - sideFaceWidth, cubeWidth - sideFaceWidth,
+			],
+			[
+				cubeWidth - sideFaceWidth - cubeletWidth,
+				cubeWidth - sideFaceWidth,
+			],
+		],
+		// F
+		[
+			[
+				cubeWidth - cubeletWidth - sideFaceWidth,
+				cubeWidth - sideFaceWidth,
+			],
+			[
+				cubeWidth - sideFaceWidth, cubeWidth - sideFaceWidth,
+			],
+			[
+				cubeWidth, cubeWidth,
+			],
+			[
+				cubeWidth - cubeletWidth - sideFaceWidth,
+				cubeWidth,
+			]
+		],
+		// R
+		[
+			[
+				cubeWidth - sideFaceWidth,
+				cubeWidth - sideFaceWidth - cubeletWidth,
+			],
+			[
+				cubeWidth, cubeWidth - sideFaceWidth - cubeletWidth,
+			],
+			[
+				cubeWidth, cubeWidth,
+			],
+			[
+				cubeWidth - sideFaceWidth, cubeWidth - sideFaceWidth
+			]
+		],
+	],
+	// Corner 1, UFL.
+	[
+		// U
+		[
+			[
+				sideFaceWidth,
+				cubeWidth - sideFaceWidth - cubeletWidth,
+			],
+			[
+				sideFaceWidth + cubeletWidth,
+				cubeWidth - sideFaceWidth - cubeletWidth,
+			],
+			[	
+				sideFaceWidth + cubeletWidth, cubeWidth - sideFaceWidth,
+			],
+			[
+				sideFaceWidth, cubeWidth - sideFaceWidth,
+			],
+		],
+		// F
+		[
+			[
+				sideFaceWidth, cubeWidth - sideFaceWidth,
+			],
+			[
+				sideFaceWidth + cubeletWidth, cubeWidth - sideFaceWidth,
+			],
+			[
+				sideFaceWidth + cubeletWidth, cubeWidth,
+			],
+			[
+				0, cubeWidth,
+			]
+		],
+		// L
+		[
+			[
+				0, cubeWidth - sideFaceWidth - cubeletWidth,
+			],
+			[
+				sideFaceWidth, cubeWidth - sideFaceWidth - cubeletWidth,
+			],
+			[
+			 	sideFaceWidth, cubeWidth - sideFaceWidth,
+			],
+			[
+				0, cubeWidth,
+			],
+		]
+	],
+];
+
 
 window.addEventListener('load', () => {
 	const nav = document.getElementById('nav');
@@ -295,7 +401,8 @@ window.addEventListener('load', () => {
 			}
 		}
 
-		for (var i = 0; i < 1; ++i) {
+		for (var i = 0; i < 2; ++i) {
+			console.log(cube.corners[i]);
 			drawCorner(ctx, i, cube.corners[i]);
 		}
 
@@ -323,64 +430,8 @@ window.addEventListener('load', () => {
 	}
 
 	function drawCorner(ctx, i, corner) {
-		const corners = [
-			// Corner 0, UFR
-			[
-				// U
-				[
-					[
-						cubeWidth - sideFaceWidth - cubeletWidth,
-						cubeWidth - sideFaceWidth - cubeletWidth,
-					],
-					[
-						cubeWidth - sideFaceWidth,
-						cubeWidth - sideFaceWidth - cubeletWidth,
-					],
-					[	cubeWidth - sideFaceWidth, cubeWidth - sideFaceWidth,
-					],
-					[
-						cubeWidth - sideFaceWidth - cubeletWidth,
-						cubeWidth - sideFaceWidth,
-					],
-				],
-				// R
-				[
-					[
-						cubeWidth - sideFaceWidth,
-						cubeWidth - sideFaceWidth - cubeletWidth,
-					],
-					[
-						cubeWidth, cubeWidth - sideFaceWidth - cubeletWidth,
-					],
-					[
-						cubeWidth, cubeWidth,
-					],
-					[
-						cubeWidth - sideFaceWidth, cubeWidth - sideFaceWidth
-					]
-				],
-				// F
-				[
-					[
-						cubeWidth - cubeletWidth - sideFaceWidth,
-						cubeWidth - sideFaceWidth,
-					],
-					[
-						cubeWidth - sideFaceWidth, cubeWidth - sideFaceWidth,
-					],
-					[
-						cubeWidth, cubeWidth,
-					],
-					[
-						cubeWidth - cubeletWidth - sideFaceWidth,
-						cubeWidth,
-					]
-				]
-			]
-		];
-
 		const clockwise = i & 1 ? true : false;
-		var faces = clockwise ? corner[0].reverse() : corner[0];
+		var faces = corner[0];
 		const rot = corner[1];
 
 		const squares = corners[i];
@@ -393,11 +444,9 @@ window.addEventListener('load', () => {
 				ctx.lineTo(points[k][0], points[k][1]);
 			}
 			ctx.lineTo(points[0][0], points[0][1]);
-			ctx.stroke();
 			ctx.fillStyle = cubeColors[faces[j]];
 			ctx.fill();
-			console.log('Face: ' + faces[j]);
-			console.log('Color: ' + cubeColors[faces[j]]);
+			ctx.stroke();
 		}
 	}
 });
