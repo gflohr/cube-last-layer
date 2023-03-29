@@ -723,14 +723,12 @@ window.addEventListener('load', () => {
 	}
 
 	function swapEdges(cube, cycle) {
-		const edges = cube.edges;
-
-		console.log(cycle);
 		cycle = cycle.map(edge => edgePositions[edge]);
-		console.log(cycle);
-//		for (var i = 1; i < cycle.length; --i) {
-//			const needle = edges.indexOf(cycle[i]);
-//		}
+		const first = cube.edges[cycle[0]]
+		for (var i = 1; i < cycle.length; ++i) {
+			cube.edges[cycle[i] - 1] = cube.edges[cycle[i]];
+		}
+		cube.edges[cycle[cycle.length - 1]] = first;
 
 		return cube;
 	}
