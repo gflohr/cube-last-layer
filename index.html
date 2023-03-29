@@ -677,9 +677,9 @@ window.addEventListener('load', () => {
 
 		if (rotation) cube = rotateCube(cube, rotation);
 
-debugger;
 		if (llcase.swapEdges) {
-			for (const cycle of llcase.swapEdges) {
+			for (var cycle of llcase.swapEdges) {
+				cycle = cycle.map(edge => edgePositions[edge]);
 				cube = swapEdges(cube, cycle);
 			}
 		}
@@ -725,7 +725,6 @@ debugger;
 	}
 
 	function swapEdges(cube, cycle) {
-		cycle = cycle.map(edge => edgePositions[edge]);
 		const first = cube.edges[cycle[0]]
 		for (var i = 1; i < cycle.length; ++i) {
 			cube.edges[cycle[i - 1]] = cube.edges[cycle[i]];
