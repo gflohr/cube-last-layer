@@ -91,7 +91,7 @@ const sections = [
 					{
 						label: 'Ua',
 						probability: '1/18',
-						swapEdges: [['UF', 'UR', 'UB']],
+						swapEdges: [['UF', 'UR', 'UL']],
 						algorithms: [
 							{
 								notation: "(R U' R U) R U (R U' R' U') R2",
@@ -677,6 +677,7 @@ window.addEventListener('load', () => {
 
 		if (rotation) cube = rotateCube(cube, rotation);
 
+debugger;
 		if (llcase.swapEdges) {
 			for (const cycle of llcase.swapEdges) {
 				cube = swapEdges(cube, cycle);
@@ -727,7 +728,7 @@ window.addEventListener('load', () => {
 		cycle = cycle.map(edge => edgePositions[edge]);
 		const first = cube.edges[cycle[0]]
 		for (var i = 1; i < cycle.length; ++i) {
-			cube.edges[cycle[i] - 1] = cube.edges[cycle[i]];
+			cube.edges[cycle[i - 1]] = cube.edges[cycle[i]];
 		}
 		cube.edges[cycle[cycle.length - 1]] = first;
 
