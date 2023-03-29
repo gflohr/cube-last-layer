@@ -320,9 +320,83 @@ const cubeCorners = [
 	],
 ];
 
-var cubeEdges = [
+const cubeEdges = [
+	// Edge 0, UF.
 	[
-		// UF.
+		// U.
+		[
+			[
+				sideFaceWidth + cubeletWidth,
+				cubeWidth - sideFaceWidth - cubeletWidth,
+			],
+			[
+				sideFaceWidth + 2 * cubeletWidth,
+				cubeWidth - sideFaceWidth - cubeletWidth,
+			],
+			[
+				sideFaceWidth + 2 * cubeletWidth,
+				cubeWidth - sideFaceWidth,
+			],
+			[
+				sideFaceWidth + cubeletWidth,
+				cubeWidth - sideFaceWidth,
+			],
+		],
+		// F.
+		[
+			[
+				sideFaceWidth + cubeletWidth,
+				sideFaceWidth + 3 * cubeletWidth,
+			],
+			[
+				sideFaceWidth + 2 * cubeletWidth,
+				sideFaceWidth + 3 * cubeletWidth,
+			],
+			[
+				sideFaceWidth + 2 * cubeletWidth, cubeWidth,
+			],
+			[
+				sideFaceWidth + cubeletWidth, cubeWidth,
+			],
+		],
+	],
+	// Edge 1, UL.
+	[
+		// UL.
+		[
+			// U.
+			[
+				sideFaceWidth, sideFaceWidth + cubeletWidth,
+			],
+			[
+				sideFaceWidth + cubeletWidth, sideFaceWidth + cubeletWidth,
+			],
+			[
+				sideFaceWidth + cubeletWidth, sideFaceWidth + 2 * cubeletWidth,
+			],
+			[
+				sideFaceWidth, sideFaceWidth + 2 * cubeletWidth,
+			],
+		],
+		[
+			// L.
+			[
+				0, sideFaceWidth + cubeletWidth,
+			],
+			[
+				sideFaceWidth, sideFaceWidth + cubeletWidth,
+			],
+			[
+				sideFaceWidth, sideFaceWidth + 2 * cubeletWidth,
+			],
+			[
+				0, sideFaceWidth + 2 * cubeletWidth,
+			],
+		],
+	],
+	// Edge 2, UB.
+	[
+		// UB.
 		[
 			// U.
 			[
@@ -339,7 +413,7 @@ var cubeEdges = [
 			],
 		],
 		[
-			// F.
+			// B.
 			[
 				sideFaceWidth + cubeletWidth, 0,
 			],
@@ -351,6 +425,46 @@ var cubeEdges = [
 			],
 			[
 				sideFaceWidth + cubeletWidth, sideFaceWidth,
+			],
+		],
+	],
+	// Edge 4, UR.
+	[
+		// UR.
+		[
+			// U.
+			[
+				sideFaceWidth + 2 * cubeletWidth,
+				sideFaceWidth + cubeletWidth,
+			],
+			[
+				sideFaceWidth + 3 * cubeletWidth,
+				sideFaceWidth + cubeletWidth,
+			],
+			[
+				sideFaceWidth + 3 * cubeletWidth,
+				sideFaceWidth + 2 * cubeletWidth,
+			],
+			[
+				sideFaceWidth + 2 * cubeletWidth,
+				sideFaceWidth + 2 * cubeletWidth,
+			],
+		],
+		[
+			// R.
+			[
+				sideFaceWidth + 3 * cubeletWidth,
+				sideFaceWidth + cubeletWidth,
+			],
+			[
+				cubeWidth, sideFaceWidth + cubeletWidth,
+			],
+			[
+				cubeWidth, sideFaceWidth + 3 * cubeletWidth,
+			],
+			[
+				sideFaceWidth + 3 * cubeletWidth,
+				sideFaceWidth + 2 * cubeletWidth,
 			],
 		],
 	],
@@ -536,10 +650,13 @@ window.addEventListener('load', () => {
 
 		for (var i = 0; i < 4; ++i) {
 			drawCubelet(ctx, cube.corners[i], cubeCorners[i]);
+			console.log(cube.corners[i], console.log(cubeCorners[i]));
 		}
 		
-		for (var i = 0; i < 1; ++i) {
+		debugger;
+		for (var i = 0; i < 4; ++i) {
 			drawCubelet(ctx, cube.edges[i], cubeEdges[i]);
+			console.log(cube.edges[i], console.log(cubeEdges[i]));
 		}
 
 		const cubeCenter = [
@@ -556,7 +673,7 @@ window.addEventListener('load', () => {
 				sideFaceWidth + cubeletWidth, sideFaceWidth + 2 * cubeletWidth,
 			],
 		];
-		drawCubelet(ctx, [['U', 0]], [cubeCenter]);
+		drawCubelet(ctx, ['U', 0], [cubeCenter]);
 
 		return canvas;
 	}
