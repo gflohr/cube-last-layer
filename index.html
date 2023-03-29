@@ -315,11 +315,46 @@ const cubeCorners = [
 			],
 			[
 				cubeWidth - sideFaceWidth, sideFaceWidth,
-			]
-		]
+			],
+		],
 	],
 ];
 
+var cubeEdges = [
+	[
+		// UF.
+		[
+			// U.
+			[
+				sideFaceWidth + cubeletWidth, sideFaceWidth,
+			],
+			[
+				sideFaceWidth + 2 * cubeletWidth, sideFaceWidth,
+			],
+			[
+				sideFaceWidth + 2 * cubeletWidth, sideFaceWidth + cubeletWidth,
+			],
+			[
+				sideFaceWidth + cubeletWidth, sideFaceWidth + cubeletWidth,
+			],
+		],
+		[
+			// F.
+			[
+				sideFaceWidth + cubeletWidth, 0,
+			],
+			[
+				sideFaceWidth + 2 * cubeletWidth, 0,
+			],
+			[
+				sideFaceWidth + 2 * cubeletWidth, sideFaceWidth,
+			],
+			[
+				sideFaceWidth + cubeletWidth, sideFaceWidth,
+			],
+		],
+	],
+];
 
 window.addEventListener('load', () => {
 	const nav = document.getElementById('nav');
@@ -502,6 +537,26 @@ window.addEventListener('load', () => {
 		for (var i = 0; i < 4; ++i) {
 			drawCubelet(ctx, cube.corners[i], cubeCorners[i]);
 		}
+		
+		for (var i = 0; i < 1; ++i) {
+			drawCubelet(ctx, cube.edges[i], cubeEdges[i]);
+		}
+
+		const cubeCenter = [
+			[
+				sideFaceWidth + cubeletWidth, sideFaceWidth + cubeletWidth,
+			],
+			[
+				sideFaceWidth + 2 * cubeletWidth, sideFaceWidth + cubeletWidth,
+			],
+			[
+				sideFaceWidth + 2 * cubeletWidth, sideFaceWidth + 2 * cubeletWidth,
+			],
+			[
+				sideFaceWidth + cubeletWidth, sideFaceWidth + 2 * cubeletWidth,
+			],
+		];
+		drawCubelet(ctx, [['U', 0]], [cubeCenter]);
 
 		return canvas;
 	}
