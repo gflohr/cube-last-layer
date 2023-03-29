@@ -801,9 +801,9 @@ window.addEventListener('load', () => {
 		
 		ctx.strokeStyle = 'rgb(0, 0, 0)';
 		ctx.fillStyle = 'rgb(0, 0, 0)';
-		for (var i = 1; i < cycle.length; ++i) {
+		for (var i = 0; i < cycle.length; ++i) {
 			const start = coordinates[cycle[i]];
-			const end = coordinates[cycle[ i == cycle.length - 1 ? 0 : i]];
+			const end = coordinates[cycle[ i == cycle.length - 1 ? 0 : i + 1]];
 
 			const lineAngle = angle(start, end);
 
@@ -815,7 +815,7 @@ window.addEventListener('load', () => {
 			ctx.stroke();
 
 			const reverseLineAngle = lineAngle + Math.PI;
-			
+
 			ctx.beginPath();
 			ctx.moveTo(end[0], end[1]);
 			ctx.fill();
