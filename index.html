@@ -705,6 +705,12 @@ window.addEventListener('load', () => {
 		];
 		drawCubelet(ctx, 'U', 0, [cubeCenter]);
 
+		if (llcase.swapEdges) {
+			for (var cycle of llcase.swapEdges) {
+				drawArrows(ctx, cycle);
+			}
+		}
+
 		return canvas;
 	}
 
@@ -747,6 +753,72 @@ window.addEventListener('load', () => {
 			ctx.fillStyle = cubeColors[faces[j]];
 			ctx.fill();
 			ctx.stroke();
+		}
+	}
+
+
+	function angle(p0, p1) {
+		const m = (p1[1] - p0[1]) / (p1[0] - p0[0]);
+
+		return Math.atan(m);
+	}
+
+	function drawArrows(ctx, cycle) {
+		const coordinates = {
+			UFR: [
+				sideFaceWidth + 2 * cubeletWidth + cubeletWidth / 2,
+				sideFaceWidth + 2 * cubeletWidth + cubeletWidth / 2,
+			],
+			UF: [
+				sideFaceWidth + cubeletWidth + cubeletWidth / 2,
+				sideFaceWidth + 2 * cubeletWidth + cubeletWidth / 2,
+			],
+			UFL: [
+				sideFaceWidth + cubeletWidth / 2,
+				sideFaceWidth + 2 * cubeletWidth + cubeletWidth / 2,
+			],
+			UL: [
+				sideFaceWidth + cubeletWidth / 2,
+				sideFaceWidth + cubeletWidth + cubeletWidth / 2,
+			],
+			UBL: [
+				sideFaceWidth + cubeletWidth / 2,
+				sideFaceWidth + cubeletWidth / 2,
+			],
+			UB: [
+				sideFaceWidth + cubeletWidth + cubeletWidth / 2,
+				sideFaceWidth + cubeletWidth / 2,
+			],
+			UBR: [
+				sideFaceWidth + 2 * cubeletWidth + cubeletWidth / 2,
+				sideFaceWidth + cubeletWidth / 2,
+			],
+			UR: [
+				sideFaceWidth + 2 * cubeletWidth + cubeletWidth / 2,
+				sideFaceWidth + cubeletWidth + cubeletWidth / 2,
+			],
+		};
+		
+		ctx.strokeStyle = 'rgb(0, 0, 0)';
+		ctx.fillStyle = 'rgb(0, 0, 0)';
+		for (var i = 1; i < cycle.length; ++i) {
+			const start = coordinates[cycle[i]];
+			const end = coordinates[cycle[ i == cycle.length - 1 ? 0 : i]];
+
+			const lineAngle = angle(start, end);
+
+			// TODO: Shift the starting point slightly in the direction
+			// of the end point.
+			ctx.beginPath();
+			ctx.moveTo(start[0], start[1]);
+			ctx.lineTo(end[0], end[1]);
+			ctx.stroke();
+
+			const reverseLineAngle = lineAngle + Math.PI;
+			
+			ctx.beginPath();
+			ctx.moveTo(end[0], end[1]);
+			ctx.fill();
 		}
 	}
 });
