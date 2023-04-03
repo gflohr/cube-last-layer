@@ -45,6 +45,7 @@ li {
 	</head>
 	<body>
 		<nav>
+			<!--
 			<twisty-player
 				alg="(M2' U M2') U2 (M2' U M2')"
 				experimental-setup-anchor="end"
@@ -54,6 +55,9 @@ li {
 				front-view="bottom-left"
 				experimental-title="Where is the title?"
 			></twisty-player>
+			-->
+			<div class="roofpig" id="roofpig"></div>
+
 			<ul id="nav" class="nav">
 
 			</ul>
@@ -63,6 +67,7 @@ li {
 		</main>
 		<!-- <script src="https://cdn.cubing.net/js/cubing/twisty" type="module"></script> -->
 		<script src="https://cdn.cubing.net/js/cubing/twisty" type="module"></script>
+		<script src="roofpig_and_three.min.js"></script>
 		<script type="module">
 "use strict";
 
@@ -503,6 +508,7 @@ const cornerPositions = {
 };
 
 window.addEventListener('load', () => {
+
 	const nav = document.getElementById('nav');
 	const main = document.getElementById('main');
 
@@ -814,11 +820,31 @@ window.addEventListener('load', () => {
 			ctx.lineTo(end[0], end[1]);
 			ctx.stroke();
 
-			const reverseLineAngle = lineAngle + Math.PI;
+debugger;
+			const l = cubeletWidth / 6;
+			const tipAngle = Math.PI / 18; // 10 degrees.
+			const gamma = lineAngle - tipAngle;
+
+			const x0 = end[0] - l * Math.cos(lineAngle - tipAngle);
+			const x1 = end[0] - l * Math.cos(lineAngle + tipAngle);
+			const y0 = end[0] - l * Math.sin(lineAngle - tipAngle);
+			const y1 = end[0] - l * Math.sin(lineAngle + tipAngle);
 
 			ctx.beginPath();
-			ctx.moveTo(end[0], end[1]);
-			ctx.fill();
+			ctx.moveTo(end[0], end[1]); // We're actually already there.
+			ctx.lineTo(x0, y0);
+			ctx.lineTo(x1, y1);
+			ctx.lineTo(end[0], end[1]);
+			ctx.stroke();
+
+			console.log("Pfeilspitze:");
+			console.log('start: ' + start);
+			console.log('end: ' + end);
+			console.log('lineAngle: ' + lineAngle);
+			console.log('tipAngle: ' + tipAngle);
+			console.log('P0: ' + [x0, y0]);
+			console.log('P1: 1' + [x1, y1]);
+
 		}
 	}
 });
