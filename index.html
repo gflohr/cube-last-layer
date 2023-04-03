@@ -56,7 +56,7 @@ li {
 				experimental-title="Where is the title?"
 			></twisty-player>
 			-->
-			<div class="roofpig" id="roofpig"></div>
+			<div class="cube" id="cube"></div>
 
 			<ul id="nav" class="nav">
 
@@ -67,6 +67,7 @@ li {
 		</main>
 		<!-- <script src="https://cdn.cubing.net/js/cubing/twisty" type="module"></script> -->
 		<script src="https://cdn.cubing.net/js/cubing/twisty" type="module"></script>
+		<script src="jquery-3.6.3.min.js"></script>
 		<script src="roofpig_and_three.min.js"></script>
 		<script type="module">
 "use strict";
@@ -508,6 +509,7 @@ const cornerPositions = {
 };
 
 window.addEventListener('load', () => {
+	const cube = CubeAnimation.create_in_dom('#cube', "alg=R U R' U R U2 R'", "class='roofpig'");
 
 	const nav = document.getElementById('nav');
 	const main = document.getElementById('main');
@@ -820,7 +822,6 @@ window.addEventListener('load', () => {
 			ctx.lineTo(end[0], end[1]);
 			ctx.stroke();
 
-debugger;
 			const l = cubeletWidth / 6;
 			const tipAngle = Math.PI / 18; // 10 degrees.
 			const gamma = lineAngle - tipAngle;
