@@ -49,6 +49,7 @@ li {
 
 .case-algorithm-container {
 	display: flex;
+	margin-bottom: 1rem;
 }
 
 .case-algorithm-canvas {
@@ -159,7 +160,7 @@ const faceIndices = {
 
 const cubeWidth = 110;
 const cubeHeight = cubeWidth;
-const sideFaceWidth = 10;
+const sideFaceWidth = 15;
 const cubeletWidth = (cubeWidth - 2 * sideFaceWidth) / 3;
 
 const cubeCorners = [
@@ -785,11 +786,27 @@ window.addEventListener('load', () => {
 		}
 	}
 
+	function drawArrow (ctx, p1, p2) {
+		const angle = Math.atan2((p2[1] - p1[1]) , (p2[0] - p1[0]));
+		const hyp = Math.sqrt((p2[0] - p1[0]) * (p2[0] - p1[0]) + (p2[1] - p1[1]) * (p2[1] - p1[1]));
+		const size = 10;
 
-	function angle(p0, p1) {
-		const m = (p1[1] - p0[1]) / (p1[0] - p0[0]);
+		ctx.save();
+		ctx.translate(p1[0], p1[1]);
+		ctx.rotate(angle);
 
-		return Math.atan(m);
+		ctx.beginPath();	
+		ctx.moveTo(0, 0);
+		ctx.lineTo(hyp - size, 0);
+		ctx.stroke();
+
+		ctx.beginPath();
+		ctx.lineTo(hyp - size, size);
+		ctx.lineTo(hyp, 0);
+		ctx.lineTo(hyp - size, -size);
+		ctx.fill();
+
+		ctx.restore();
 	}
 
 	function drawArrows(ctx, cycle) {
@@ -830,43 +847,11 @@ window.addEventListener('load', () => {
 		
 		ctx.strokeStyle = 'rgb(0, 0, 0)';
 		ctx.fillStyle = 'rgb(0, 0, 0)';
+
 		for (var i = 0; i < cycle.length; ++i) {
 			const start = coordinates[cycle[i]];
 			const end = coordinates[cycle[ i == cycle.length - 1 ? 0 : i + 1]];
-
-			const lineAngle = angle(start, end);
-
-			// TODO: Shift the starting point slightly in the direction
-			// of the end point.
-			ctx.beginPath();
-			ctx.moveTo(start[0], start[1]);
-			ctx.lineTo(end[0], end[1]);
-			ctx.stroke();
-
-			const l = cubeletWidth / 6;
-			const tipAngle = Math.PI / 18; // 10 degrees.
-			const gamma = lineAngle - tipAngle;
-
-			const x0 = end[0] - l * Math.cos(lineAngle - tipAngle);
-			const x1 = end[0] - l * Math.cos(lineAngle + tipAngle);
-			const y0 = end[0] - l * Math.sin(lineAngle - tipAngle);
-			const y1 = end[0] - l * Math.sin(lineAngle + tipAngle);
-
-			ctx.beginPath();
-			ctx.moveTo(end[0], end[1]); // We're actually already there.
-			ctx.lineTo(x0, y0);
-			ctx.lineTo(x1, y1);
-			ctx.lineTo(end[0], end[1]);
-			ctx.stroke();
-
-			console.log("Pfeilspitze:");
-			console.log('start: ' + start);
-			console.log('end: ' + end);
-			console.log('lineAngle: ' + lineAngle);
-			console.log('tipAngle: ' + tipAngle);
-			console.log('P0: ' + [x0, y0]);
-			console.log('P1: 1' + [x1, y1]);
-
+			drawArrow(ctx, start, end);
 		}
 	}
 });
