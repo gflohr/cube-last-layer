@@ -80,17 +80,6 @@ li {
 	</head>
 	<body>
 		<nav>
-			<!--
-			<twisty-player
-				alg="(M2' U M2') U2 (M2' U M2')"
-				experimental-setup-anchor="end"
-				background="none"
-				x-experimental-stickering="EOLL"
-				viewer-link="none"
-				front-view="bottom-left"
-				experimental-title="Where is the title?"
-			></twisty-player>
-			-->
 			<div class="cube" id="cube"></div>
 
 			<ul id="nav" class="nav">
@@ -544,7 +533,7 @@ const cornerPositions = {
 };
 
 window.addEventListener('load', () => {
-	const cube = CubeAnimation.create_in_dom('#cube', "alg=R U R' U R U2 R'", "class='roofpig'");
+	let cube = CubeAnimation.create_in_dom('#cube', "alg=R U R' U R U2 R'", "class='roofpig'");
 
 	const nav = document.getElementById('nav');
 	const main = document.getElementById('main');
@@ -677,8 +666,13 @@ window.addEventListener('load', () => {
 			for (const elem of document.getElementsByClassName('case-algorithm-container')) {
 				elem.setAttribute('class', 'case-algorithm-container');
 			}
-			console.log(container);
 			container.setAttribute('class', 'case-algorithm-container case-algorithm-container-selected');
+			if (cube) {
+				cube.remove();
+			}
+			const cleanAlgorithm = algorithm.notation.replace(/[^ UDFBRLMES2']/ig, '');
+			cube = CubeAnimation.create_in_dom('#cube', "alg=" + cleanAlgorithm, "class='roofpig'");
+
 		};
 
 		var algorithmDiv = document.createElement('div');
