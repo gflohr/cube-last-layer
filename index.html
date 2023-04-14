@@ -41,6 +41,29 @@ ul {
 li {
 	padding-left: 0;
 }
+
+.case-probability {
+	margin-top: 0.5rem;
+	margin-bottom: 1.5rem;
+}
+
+.case-algorithm-container {
+	display: flex;
+}
+
+.case-algorithm-canvas {
+	order: 1
+}
+
+.case-default-button {
+	order: 2
+}
+
+.case-algorithm {
+	order: 3;
+	font-size: 120%;
+}
+
 		</style>
 	</head>
 	<body>
@@ -615,9 +638,11 @@ window.addEventListener('load', () => {
 
 		const container = document.createElement('div');
 		container.setAttribute('class', 'case');
+
 		const probability = document.createElement('div');
-		container.setAttribute('class', 'case-probability');
-		container.appendChild(document.createTextNode('p = ' + llcase.probability));
+		probability.setAttribute('class', 'case-probability');
+		probability.appendChild(document.createTextNode('p = ' + llcase.probability));
+		container.appendChild(probability);
 
 		main.appendChild(container);
 
@@ -647,10 +672,6 @@ window.addEventListener('load', () => {
 		}
 		radioDiv.appendChild(radioButton);
 
-		const label = document.createElement('label');
-		label.setAttribute('for', id);
-		label.appendChild(document.createTextNode('Favourite'));
-		radioDiv.appendChild(label);
 		container.appendChild(radioDiv);
 
 		var algorithmDiv = document.createElement('div');
