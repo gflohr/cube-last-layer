@@ -143,12 +143,12 @@ var ids = {
 };
 
 const cubeColors = {
-	U: 'rgb(255, 255, 255)', // white
-	D: 'rgb(255, 254, 85)',  // yellow
-	R: 'rgb(235, 51, 35)',   // red
-	L: 'rgb(240, 142, 53)',  // orange
-	F: 'rgb(117, 250, 76)',  // green
-	B: 'rgb(50, 104, 246)',  // blue
+	U: 'rgb(255, 254, 85)',  // yellow
+	D: 'rgb(255, 255, 255)', // white
+	F: 'rgb(235, 51, 35)',   // red
+	B: 'rgb(240, 142, 53)',  // orange
+	R: 'rgb(117, 250, 76)',  // green
+	L: 'rgb(50, 104, 246)',  // blue
 };
 
 const faceIndices = {
@@ -789,7 +789,7 @@ window.addEventListener('load', () => {
 	function drawArrow (ctx, p1, p2) {
 		const angle = Math.atan2((p2[1] - p1[1]) , (p2[0] - p1[0]));
 		const hyp = Math.sqrt((p2[0] - p1[0]) * (p2[0] - p1[0]) + (p2[1] - p1[1]) * (p2[1] - p1[1]));
-		const size = 10;
+		const size = 7;
 
 		ctx.save();
 		ctx.translate(p1[0], p1[1]);
