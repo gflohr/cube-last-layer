@@ -50,10 +50,20 @@ li {
 .case-algorithm-container {
 	display: flex;
 	margin-bottom: 1rem;
+	cursor: pointer;
+}
+
+.case-algorithm-container:hover {
+	background-color: #eeeeee;
+}
+
+.case-algorithm-container-selected, .case-algorithm-container-selected:hover {
+	cursor: default;
+	background-color: #dddddd;
 }
 
 .case-algorithm-canvas {
-	order: 1
+	order: 1;
 }
 
 .case-default-button {
@@ -63,6 +73,7 @@ li {
 .case-algorithm {
 	order: 3;
 	font-size: 120%;
+	margin-left: 1rem;
 }
 
 		</style>
@@ -662,18 +673,13 @@ window.addEventListener('load', () => {
 	function addAlgorithm(llcase, algorithm, id) {
 		const container = document.createElement('div');
 		container.setAttribute('class', 'case-algorithm-container');
-
-		const radioDiv = document.createElement('div');
-		radioDiv.setAttribute('class', 'case-default-button');
-		const radioButton = document.createElement('input');
-		radioButton.setAttribute('type', 'radio');
-		radioButton.setAttribute('name', id);
-		if (algorithm.isDefault) {
-			radioButton.setAttribute('checked', 'checked');
-		}
-		radioDiv.appendChild(radioButton);
-
-		container.appendChild(radioDiv);
+		container.onclick = () => {
+			for (const elem of document.getElementsByClassName('case-algorithm-container')) {
+				elem.setAttribute('class', 'case-algorithm-container');
+			}
+			console.log(container);
+			container.setAttribute('class', 'case-algorithm-container case-algorithm-container-selected');
+		};
 
 		var algorithmDiv = document.createElement('div');
 		algorithmDiv.setAttribute('class', 'case-algorithm');
