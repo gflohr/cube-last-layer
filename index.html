@@ -108,7 +108,7 @@ const sections = [
 				{
 						label: 'Ub',
 						probability: '1/18',
-						swapEdges: [['UB', 'UF', 'UL']],
+						cycleEdges: [['UB', 'UF', 'UL']],
 						algorithms: [
 							{
 								notation: "L2' U S U2 S' U L2",
@@ -130,7 +130,7 @@ const sections = [
 					{
 						label: 'Ua',
 						probability: '1/18',
-						swapEdges: [['UB', 'UF', 'UR']],
+						cycleEdges: [['UB', 'UF', 'UR']],
 						algorithms: [
 							{
 								notation: "R2 U' S' U2' S U' R2",
@@ -156,7 +156,7 @@ const sections = [
 					{
 						label: 'H',
 						probability: '1/72',
-						swapEdges: [['UL', 'UR'], ['UF', 'UB']],
+						cycleEdges: [['UL', 'UR'], ['UF', 'UB']],
 						algorithms: [
 							{
 								notation: "(M2' U M2') U2 (M2' U M2')",
@@ -169,7 +169,7 @@ const sections = [
 					{
 						label: 'Z',
 						probability: '1/36',
-						swapEdges: [['UF', 'UL'], ['UR', 'UB']],
+						cycleEdges: [['UF', 'UL'], ['UR', 'UB']],
 						algorithms: [
 							{
 								notation: "M' U (M2' U M2') U (M' U2 M2') [U']",
@@ -192,7 +192,7 @@ const sections = [
 					{
 						label: 'Aa',
 						probability: '1/18',
-						swapEdges: [['UBL', 'UBR', 'UFR']],
+						cycleCorners: [['UBL', 'UBR', 'UFR']],
 						algorithms: [
 							{
 								notation: "x (R' U R') D2 (R U' R') D2 R2 x'",
@@ -268,6 +268,25 @@ const swapRotations = [
 		UBL: 'UFL',
 	},
 ];
+
+const swapFlips = {
+	UBR: {
+		UFR: 1,
+		UBL: 1,
+	},
+	UFR: {
+		UFL: 1,
+		UBR: 1,
+	},
+	UFL: {
+		UBL: 1,
+		UFR: 1,
+	},
+	UBL: {
+		UBR: 1,
+		UFL: 1,
+	},
+};
 
 const cubeWidth = 110;
 const cubeHeight = cubeWidth;
@@ -852,10 +871,17 @@ window.addEventListener('load', () => {
 			cornerOrientations: [0, 0, 0, 0],
 		};
 
-		if (llcase.swapEdges) {
-			for (let cycle of llcase.swapEdges) {
+		if (llcase.cycleEdges) {
+			for (let cycle of llcase.cycleEdges) {
 				cycle = cycle.map(edge => edgePositions[edge]);
-				cube = swapEdges(cube, cycle);
+				cube = cycleEdges(cube, cycle);
+			}
+		}
+
+		if (llcase.cycleCorners) {
+			for (let cycle of llcase.cycleCorners) {
+				cycle = cycle.map(corner => cornerPositions[corner]);
+				cube = cycleCorners(cube, cycle);
 			}
 		}
 
@@ -884,13 +910,21 @@ window.addEventListener('load', () => {
 		];
 		drawCubelet(ctx, 'U', 0, [cubeCenter]);
 
-		if (llcase.swapEdges) {
-			for (let cycle of llcase.swapEdges) {
-				if (rotation) {
-					cycle = cycleSwaps(cycle, rotation);
-				}
-				drawArrows(ctx, cycle);
+		let swaps = [];
+		if (llcase.cycleEdges) {
+			for (let cycle of llcase.cycleEdges)
+				swaps.push(cycle);
+		}
+		if (llcase.cycleCorners) {
+			for (let cycle of llcase.cycleCorners)
+				swaps.push(cycle);
+		}
+
+		for (let cycle of swaps) {
+			if (rotation) {
+				cycle = cycleSwaps(cycle, rotation);
 			}
+			drawArrows(ctx, cycle);
 		}
 
 		return canvas;
@@ -914,12 +948,22 @@ window.addEventListener('load', () => {
 		return cube;
 	}
 
-	function swapEdges(cube, cycle) {
+	function cycleEdges(cube, cycle) {
 		const first = cube.edges[cycle[0]]
 		for (var i = 1; i < cycle.length; ++i) {
 			cube.edges[cycle[i - 1]] = cube.edges[cycle[i]];
 		}
 		cube.edges[cycle[cycle.length - 1]] = first;
+
+		return cube;
+	}
+
+	function cycleCorners(cube, cycle) {
+		const first = cube.corners[cycle[0]]
+		for (var i = 1; i < cycle.length; ++i) {
+			cube.corners[cycle[i - 1]] = cube.corners[cycle[i]];
+		}
+		cube.corners[cycle[cycle.length - 1]] = first;
 
 		return cube;
 	}
