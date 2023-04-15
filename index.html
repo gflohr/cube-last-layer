@@ -105,6 +105,41 @@ const sections = [
 			{
 				label_en: 'Edges Only',
 				cases: [
+				{
+						label: 'Ub',
+						probability: '1/18',
+						swapEdges: [['UB', 'UF', 'UL']],
+						algorithms: [
+							{
+								notation: "L2' U S U2 S' U L2",
+							},
+							{
+								notation: "R2 U (R U R' U') R' U' (R' U R')",
+								rotation: 3, // 3 times clockwise.
+							},
+							{
+								notation: "(R' U R' U') R' U' (R' U R U) R2'",
+								rotation: 1,
+							},
+						],
+					},
+					{
+						label: 'Ua',
+						probability: '1/18',
+						swapEdges: [['UB', 'UF', 'UR']],
+						algorithms: [
+							{
+								notation: "R2 U' S' U2' S U' R2",
+							},
+							{
+								notation: "(R U' R U) R U (R U' R' U') R2",
+								rotation: 0,
+							},
+							{
+								notation: "(M2 U M) U2 (M' U M2)",
+							},
+						],
+					},
 					{
 						label: 'H',
 						probability: '1/72',
@@ -115,19 +150,6 @@ const sections = [
 							},
 							{
 								notation: "(M2' U' M2') U2 (M2' U' M2')",
-							},
-						],
-					},
-					{
-						label: 'Ua',
-						probability: '1/18',
-						swapEdges: [['UF', 'UR', 'UL']],
-						algorithms: [
-							{
-								notation: "(R U' R U) R U (R U' R' U') R2",
-							},
-							{
-								notation: "(M2 U M) U2 (M' U M2)",
 							},
 						],
 					},
@@ -533,7 +555,7 @@ const cornerPositions = {
 };
 
 window.addEventListener('load', () => {
-	let cube = CubeAnimation.create_in_dom('#cube', "alg=R U R' U R U2 R'", "class='roofpig'");
+	let cube;
 
 	const nav = document.getElementById('nav');
 	const main = document.getElementById('main');
@@ -670,8 +692,24 @@ window.addEventListener('load', () => {
 			if (cube) {
 				cube.remove();
 			}
-			const cleanAlgorithm = algorithm.notation.replace(/[^ UDFBRLMES2']/ig, '');
-			cube = CubeAnimation.create_in_dom('#cube', "alg=" + cleanAlgorithm, "class='roofpig'");
+			const cleanAlgorithm = algorithm.notation.replace(/[^ UDFBRLMESxyz2']/ig, '');
+			let config = "alg=" + cleanAlgorithm;
+			if (algorithm.rotation) {
+				let setupmoves = '|setupmoves=';
+				switch(algorithm.rotation) {
+					case 1:
+						setupmoves += 'y';
+						break;
+					case 2:
+						setupmoves += 'y2';
+						break;
+					case 3:
+						setupmoves += 'y\'';
+						break;
+				}
+				config += setupmoves;
+			}
+			cube = CubeAnimation.create_in_dom('#cube', config, "class='roofpig'");
 
 		};
 
@@ -689,6 +727,7 @@ window.addEventListener('load', () => {
 	}
 
 	function visualiseLastLayer(llcase, rotation) {
+		//debugger;
 		var canvas = document.createElement('canvas');
 
 		canvas.setAttribute('width', cubeWidth);
@@ -705,8 +744,6 @@ window.addEventListener('load', () => {
 			cornerOrientations: [0, 0, 0, 0],
 		};
 
-		if (rotation) cube = rotateCube(cube, rotation);
-
 		if (llcase.swapEdges) {
 			for (var cycle of llcase.swapEdges) {
 				cycle = cycle.map(edge => edgePositions[edge]);
@@ -714,9 +751,11 @@ window.addEventListener('load', () => {
 			}
 		}
 
+		if (rotation) cube = rotateCube(cube, rotation);
+
 		for (var i = 0; i < 4; ++i) {
-			drawCubelet(ctx, cube.corners[i], llcase.rotation || 0, cubeCorners[i]);
-			drawCubelet(ctx, cube.edges[i], llcase.rotation || 0, cubeEdges[i]);
+			drawCubelet(ctx, cube.corners[i], cube.cornerOrientations[i], cubeCorners[i]);
+			drawCubelet(ctx, cube.edges[i], cube.edgeOrientations[i], cubeEdges[i]);
 		}
 
 		const cubeCenter = [
@@ -744,9 +783,20 @@ window.addEventListener('load', () => {
 		return canvas;
 	}
 
+	function flipCorner(corner) {
+		return corner[0] + corner[2] + corner[1];
+	}
+
 	function rotateCube(cube, rotation) {
 		cube.edges = cycle(cube.edges, rotation);
 		cube.corners = cycle(cube.corners, rotation);
+
+		// Odd?
+		if (rotation & 1) {
+			for (let i = 0; i < cube.corners.length; ++i) {
+				cube.corners[i] = flipCorner(cube.corners[i]);
+			}
+		}
 
 		return cube;
 	}
