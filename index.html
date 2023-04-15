@@ -121,6 +121,10 @@ const sections = [
 								notation: "(R' U R' U') R' U' (R' U R U) R2'",
 								rotation: 1,
 							},
+							{
+								notation: "M2 U' M' U2 M U' M2",
+								rotation: 1,
+							},
 						],
 					},
 					{
@@ -133,10 +137,19 @@ const sections = [
 							},
 							{
 								notation: "(R U' R U) R U (R U' R' U') R2",
-								rotation: 0,
+								rotation: 1,
+							},
+							{
+								notation: "(R U R' U) (R' U' R2 U') R' U R' U R [U2]",
+								rotation: 3,
+							},
+							{
+								notation: "(R2 U' R' U') R U R U (R U' R)",
+								rotation: 3,
 							},
 							{
 								notation: "(M2 U M) U2 (M' U M2)",
+								rotation: 1,
 							},
 						],
 					},
@@ -153,6 +166,24 @@ const sections = [
 							},
 						],
 					},
+					{
+						label: 'Z',
+						probability: '1/36',
+						swapEdges: [['UF', 'UL'], ['UR', 'UB']],
+						algorithms: [
+							{
+								notation: "M' U (M2' U M2') U (M' U2 M2') [U']",
+							},
+							{
+								notation: "M' U' M2 U' M2 U' M' U2 M2 U",
+								rotation: 1,
+							},
+							{
+								notation: "(M2' U M2' U) (M' U2) (M2' U2 M') [U2]",
+								rotation: 1,
+							}
+						]
+					}
 				],
 			},
 		],
@@ -752,6 +783,8 @@ window.addEventListener('load', () => {
 				}
 				config += setupmoves;
 			}
+			config += '|flags=showalg|algdisplay=2p';
+			console.log(config);
 			cube = CubeAnimation.create_in_dom('#cube', config, "class='roofpig'");
 
 		};
