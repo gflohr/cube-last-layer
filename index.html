@@ -961,9 +961,18 @@ window.addEventListener('load', () => {
 	function cycleCorners(cube, cycle) {
 		const first = cube.corners[cycle[0]]
 		for (var i = 1; i < cycle.length; ++i) {
+			const flip = (cycle[i - 1] - cycle[i]) & 1;
 			cube.corners[cycle[i - 1]] = cube.corners[cycle[i]];
+			if (flip) {
+				cube.corners[cycle[i - 1]] = flipCorner(cube.corners[cycle[i - 1]]);
+			}
 		}
-		cube.corners[cycle[cycle.length - 1]] = first;
+		const flip = (cycle[cycle.length - 1] - cycle[0]) & 1;
+		if (flip) {
+			cube.corners[cycle[cycle.length - 1]] = flipCorner(first);
+		} else {
+			cube.corners[cycle[cycle.length - 1]] = first;
+		}
 
 		return cube;
 	}
