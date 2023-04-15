@@ -726,8 +726,16 @@ window.addEventListener('load', () => {
 		return container;
 	}
 
+	function cycleArray(array, times) {
+		const newArray = [];
+		for (var i = 0; i < array.length; ++i) {
+			newArray[i] = array[(i + array.length - times) % array.length];
+		}
+
+		return newArray;
+	}
+
 	function visualiseLastLayer(llcase, rotation) {
-		//debugger;
 		var canvas = document.createElement('canvas');
 
 		canvas.setAttribute('width', cubeWidth);
@@ -745,13 +753,16 @@ window.addEventListener('load', () => {
 		};
 
 		if (llcase.swapEdges) {
-			for (var cycle of llcase.swapEdges) {
+			for (let cycle of llcase.swapEdges) {
 				cycle = cycle.map(edge => edgePositions[edge]);
 				cube = swapEdges(cube, cycle);
 			}
 		}
 
-		if (rotation) cube = rotateCube(cube, rotation);
+		if (rotation) {
+			cube = rotateCube(cube, rotation);
+			llcase.swapEdges = cycleArray(llcase.swapEdges, rotation);
+		}
 
 		for (var i = 0; i < 4; ++i) {
 			drawCubelet(ctx, cube.corners[i], cube.cornerOrientations[i], cubeCorners[i]);
@@ -788,8 +799,8 @@ window.addEventListener('load', () => {
 	}
 
 	function rotateCube(cube, rotation) {
-		cube.edges = cycle(cube.edges, rotation);
-		cube.corners = cycle(cube.corners, rotation);
+		cube.edges = cycleArray(cube.edges, rotation);
+		cube.corners = cycleArray(cube.corners, rotation);
 
 		// Odd?
 		if (rotation & 1) {
@@ -799,15 +810,6 @@ window.addEventListener('load', () => {
 		}
 
 		return cube;
-	}
-
-	function cycle(array, times) {
-		const newArray = [];
-		for (var i = 0; i < array.length; ++i) {
-			newArray[i] = array[(i + array.length - times) % array.length];
-		}
-
-		return newArray;
 	}
 
 	function swapEdges(cube, cycle) {
@@ -821,7 +823,7 @@ window.addEventListener('load', () => {
 	}
 
 	function drawCubelet(ctx, faces, rot, squares) {
-		faces = cycle(faces, rot);
+		faces = cycleArray(faces, rot);
 		for (var j = 0; j < squares.length; ++j) {
 			const points = squares[j];
 			ctx.beginPath();
