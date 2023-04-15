@@ -180,6 +180,49 @@ const faceIndices = {
 	L: 3,
 };
 
+const swapRotations = [
+	{
+		UB: 'UB',
+		UR: 'UR',
+		UF: 'UF',
+		UL: 'UL',
+		UBR: 'UBR',
+		UFR: 'UFR',
+		UFL: 'UFL',
+		UBL: 'UBL',
+	},
+	{
+		UB: 'UR',
+		UR: 'UF',
+		UF: 'UL',
+		UL: 'UB',
+		UBR: 'UFR',
+		UFR: 'UFL',
+		UFL: 'UBL',
+		UBL: 'UBR',
+	},
+	{
+		UB: 'UF',
+		UR: 'UL',
+		UF: 'UB',
+		UL: 'UR',
+		UBR: 'UFL',
+		UFR: 'UBL',
+		UFL: 'UBR',
+		UBL: 'UFR',
+	},
+	{
+		UB: 'UL',
+		UR: 'UB',
+		UF: 'UR',
+		UL: 'UF',
+		UBR: 'UBL',
+		UFR: 'UBR',
+		UFL: 'UFR',
+		UBL: 'UFL',
+	},
+];
+
 const cubeWidth = 110;
 const cubeHeight = cubeWidth;
 const sideFaceWidth = 15;
@@ -735,6 +778,15 @@ window.addEventListener('load', () => {
 		return newArray;
 	}
 
+	function cycleSwaps(swaps, rotation) {
+		const cycledSwaps = [];
+		for (let i = 0; i < swaps.length; ++i) {
+			cycledSwaps[i] = swapRotations[rotation][swaps[i]];
+		}
+
+		return cycledSwaps;
+	}
+
 	function visualiseLastLayer(llcase, rotation) {
 		var canvas = document.createElement('canvas');
 
@@ -761,7 +813,6 @@ window.addEventListener('load', () => {
 
 		if (rotation) {
 			cube = rotateCube(cube, rotation);
-			llcase.swapEdges = cycleArray(llcase.swapEdges, rotation);
 		}
 
 		for (var i = 0; i < 4; ++i) {
@@ -786,7 +837,10 @@ window.addEventListener('load', () => {
 		drawCubelet(ctx, 'U', 0, [cubeCenter]);
 
 		if (llcase.swapEdges) {
-			for (var cycle of llcase.swapEdges) {
+			for (let cycle of llcase.swapEdges) {
+				if (rotation) {
+					cycle = cycleSwaps(cycle, rotation);
+				}
 				drawArrows(ctx, cycle);
 			}
 		}
