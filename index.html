@@ -189,17 +189,41 @@ const sections = [
 			{
 				label_en: 'Corners Only',
 				cases: [
-					{
+				{
 						label: 'Aa',
 						probability: '1/18',
 						cycleCorners: [['UBL', 'UBR', 'UFR']],
 						algorithms: [
 							{
-								notation: "x (R' U R') D2 (R U' R') D2 R2 x'",
+								notation: "x (R' U R') D2 (R U' R') D2 R2 [x']",
 							},
 							{
-								notation: "x' R2 D2 (R' U' R) D2 (R' U R') x",
+								notation: "x' R2 D2 (R' U' R) D2 (R' U R') [x]",
 								rotation: 1,
+							},
+						],
+					},
+					{
+						label: 'Ab',
+						probability: '1/18',
+						cycleCorners: [['UBR', 'UBL', 'UFR']],
+						algorithms: [
+							{
+								notation: "x R2' D2 (R U R') D2 (R U' R) [x]",
+							},
+							{
+								notation: "x' (R U' R) D2 (R' U R) D2 R2' [x]",
+								rotation: 1,
+							},
+						],
+					},
+					{
+						label: 'E',
+						probability: '1/36',
+						cycleCorners: [['UBL', 'UFL'], ['UBR', 'UFR']],
+						algorithms: [
+							{
+								notation: "x' (R U' R' D) (R U R' D') (R U R' D) (R U' R' D') [x]",
 							},
 						],
 					},
