@@ -199,6 +199,42 @@ const methods = {
 
 const sections = [
 	{
+		label_en: 'EOLL (Edge Orientation Last Layer)',
+		label_de: 'EOLL (Kanten letzte Ebene orientieren)',
+		class: 'step',
+		step: 'EOLL',
+		stickering: 'OLL-Edges',
+		subsections: [
+			{
+				label_en: 'Two Edges',
+				label_de: 'Zwei Kanten',
+				cases: [
+					{
+						label_en: 'I-Shape',
+						label_de: 'I-Form',
+						probability: '2/7',
+						flipEdges: [['UL', 'UR']],
+						algorithms: [
+							{
+								notation: "F (R U R' U') F'",
+							},
+							{
+								notation: "R U R' U' M' U R U' r'",
+							},
+						],
+					},
+				],
+			},
+			{
+				label_en: 'Four Edges',
+				label_de: 'Vier Kanten',
+				cases: [
+
+				],
+			},
+		],
+	},
+	{
 		label_en: 'EPLL (Edge Permutation Last Layer)',
 		label_de: 'EPLL (Kanten letzte Ebene permutieren)',
 		class: 'step',
@@ -211,7 +247,7 @@ const sections = [
 				cases: [
 					{
 						label: 'Ub',
-						probability: '1/18',
+						probability: '4/11',
 						cycleEdges: [['UB', 'UF', 'UL']],
 						algorithms: [
 							{
@@ -233,7 +269,7 @@ const sections = [
 					},
 					{
 						label: 'Ua',
-						probability: '1/18',
+						probability: '4/11',
 						cycleEdges: [['UB', 'UF', 'UR']],
 						algorithms: [
 							{
@@ -265,7 +301,7 @@ const sections = [
 				cases: [
 					{
 						label: 'H',
-						probability: '1/72',
+						probability: '1/11',
 						cycleEdges: [['UL', 'UR'], ['UF', 'UB']],
 						algorithms: [
 							{
@@ -278,7 +314,7 @@ const sections = [
 					},
 					{
 						label: 'Z',
-						probability: '1/36',
+						probability: '2/11',
 						cycleEdges: [['UF', 'UL'], ['UR', 'UB']],
 						algorithms: [
 							{
@@ -1015,8 +1051,8 @@ window.addEventListener('load', () => {
 	}
 
 	function makeTranslatable(elem, object) {
-		elem.dataset.contentEn = object.label_en;
-		elem.dataset.contentDe = object.label_de;
+		elem.dataset.contentEn = object.label_en || object.label;
+		elem.dataset.contentDe = object.label_de || object.label;
 		let classAttr = elem.getAttribute('class');
 		if (classAttr) {
 			elem.setAttribute('class', classAttr + ' translatable');
@@ -1056,11 +1092,11 @@ window.addEventListener('load', () => {
 		li.appendChild(ul);
 
 		for (const subsection of section.subsections) {
-			addSubsection(container, ul, subsection);
+			addSubsection(container, ul, subsection, section.stickering);
 		}
 	}
 
-	function addSubsection(stepContainer, navList, subsection) {
+	function addSubsection(stepContainer, navList, subsection, stickering) {
 		const label = subsection[translatedName('label')];
 		const id = makeId(label);
 
@@ -1084,12 +1120,12 @@ window.addEventListener('load', () => {
 		stepContainer.appendChild(h);
 
 		for (const llcase of subsection.cases) {
-			addCase(stepContainer, ul, llcase);
+			addCase(stepContainer, ul, llcase, stickering);
 		}
 	}
 
-	function addCase(stepContainer, navList, llcase) {
-		const label = llcase['label'];
+	function addCase(stepContainer, navList, llcase, stickering) {
+		const label = llcase[translatedName('label')] || llcase['label'];
 		const id = makeId(label);
 
 		const link = document.createElement('a');
@@ -1127,11 +1163,11 @@ window.addEventListener('load', () => {
 		}
 
 		for (const algorithm of llcase.algorithms) {
-			container.appendChild(addAlgorithm(llcase, algorithm, id));
+			container.appendChild(addAlgorithm(llcase, algorithm, id, stickering));
 		}
 	}
 
-	function addAlgorithm(llcase, algorithm, id) {
+	function addAlgorithm(llcase, algorithm, id, stickering) {
 		const container = document.createElement('div');
 		if (algorithm.isDefault) {
 			container.setAttribute(
@@ -1152,6 +1188,10 @@ window.addEventListener('load', () => {
 			}
 			const cleanAlgorithm = algorithm.notation.replace(/[^ UDFBRLMESxyz2']/ig, '');
 			let config = "alg=" + cleanAlgorithm;
+			if ('OLL-Edges' === stickering) {
+				config += '|solved=D DFL DF DFR DR DBR DB DBL DL DFL F R B L FR BR BL FL'
+					+ '|colored=U Uf Ur Ul Ub';
+			}
 			if (algorithm.rotation) {
 				let setupmoves = '|setupmoves=';
 				switch(algorithm.rotation) {
