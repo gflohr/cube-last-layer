@@ -871,9 +871,17 @@ window.addEventListener('load', () => {
 
 	function addAlgorithm(llcase, algorithm, id) {
 		const container = document.createElement('div');
-		container.setAttribute('class', 'case-algorithm-container');
+		if (algorithm.isDefault) {
+			container.setAttribute(
+				'class',
+				'case-algorithm-container case-algorithm-container-selected'
+			);
+		} else {
+			container.setAttribute('class', 'case-algorithm-container');
+		}
 		container.onclick = () => {
-			for (const elem of document.getElementsByClassName('case-algorithm-container')) {
+			const caseDiv = container.parentElement;
+			for (const elem of caseDiv.getElementsByClassName('case-algorithm-container')) {
 				elem.setAttribute('class', 'case-algorithm-container');
 			}
 			container.setAttribute('class', 'case-algorithm-container case-algorithm-container-selected');
