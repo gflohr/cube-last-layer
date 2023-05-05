@@ -158,20 +158,20 @@ li {
 					data-content-en="Method"
 					data-content-de="Methode">Method</legend>
 				<div>
-					<input type="radio" name="method" value="1-look-oll-pll" 
+					<input type="radio" name="method" value="CFOP" 
 						class="method-switch" checked>
-					<label for="1-look-oll-pll"
+					<label for="CFOP"
 						class="translatable"
-					    data-content-en="(1-Look) OLL-PLL"
-						data-content-de="(Einstufiges) OLL-PLL">1-Look OLL-PLL</label>
+					    data-content-en="CFOP"
+						data-content-de="CFOP">CFOP</label>
 				</div>
 				<div>
-					<input type="radio" name="method" value="2-look-oll-pll"
+					<input type="radio" name="method" value="CFOP-4-Look-LL"
 						class="method-switch">
-					<label for="2-look-oll-pll"
+					<label for="CFOP-4-Look-LL"
 						class="translatable"
-					    data-content-en="(2-Look) OLL-PLL"
-						data-content-de="(Zweistufiges) OLL-PLL">Zweistufiges OLL-PLL</label>
+					    data-content-en="CFOP (4-Look-Last-Layer)"
+						data-content-de="CFOP (letzte Ebene 4-stufig)">Zweistufiges OLL-PLL</label>
 				</div>
 			</fieldset>
 		</main>
@@ -182,13 +182,130 @@ li {
 "use strict";
 
 let lingua = 'en';
+let method = 'CFOP';
+
+const methods = {
+	CFOP: [
+		'OLL',
+		'PLL',
+	],
+	'CFOP-4-Look-LL': [
+		'EOLL',
+		'OCLL',
+		'CPOLL',
+		'EPLL',
+	],
+};
 
 const sections = [
+	{
+		label_en: 'EPLL (Edge Permutation Last Layer)',
+		label_de: 'EPLL (Kanten letzte Ebene permutieren)',
+		class: 'step',
+		step: 'EPLL',
+		stickering: 'PLL',
+		subsections: [
+			{
+				label_en: 'Three Edges',
+				label_de: 'Drei Kanten',
+				cases: [
+					{
+						label: 'Ub',
+						probability: '1/18',
+						cycleEdges: [['UB', 'UF', 'UL']],
+						algorithms: [
+							{
+								notation: "L2' U S U2 S' U L2",
+							},
+							{
+								notation: "R2 U (R U R' U') R' U' (R' U R')",
+								rotation: 3, // 3 times clockwise.
+							},
+							{
+								notation: "(R' U R' U') R' U' (R' U R U) R2'",
+								rotation: 1,
+							},
+							{
+								notation: "M2 U' M' U2 M U' M2",
+								rotation: 1,
+							},
+						],
+					},
+					{
+						label: 'Ua',
+						probability: '1/18',
+						cycleEdges: [['UB', 'UF', 'UR']],
+						algorithms: [
+							{
+								notation: "R2 U' S' U2' S U' R2",
+							},
+							{
+								notation: "(R U' R U) R U (R U' R' U') R2",
+								rotation: 1,
+							},
+							{
+								notation: "(R U R' U) (R' U' R2 U') R' U R' U R [U2]",
+								rotation: 3,
+							},
+							{
+								notation: "(R2 U' R' U') R U R U (R U' R)",
+								rotation: 3,
+							},
+							{
+								notation: "(M2 U M) U2 (M' U M2)",
+								rotation: 1,
+							},
+						],
+					},
+				],
+			},
+			{
+				label_en: 'Four Edges',
+				label_de: 'Vier Kanten',
+				cases: [
+					{
+						label: 'H',
+						probability: '1/72',
+						cycleEdges: [['UL', 'UR'], ['UF', 'UB']],
+						algorithms: [
+							{
+								notation: "(M2' U M2') U2 (M2' U M2')",
+							},
+							{
+								notation: "(M2' U' M2') U2 (M2' U' M2')",
+							},
+						],
+					},
+					{
+						label: 'Z',
+						probability: '1/36',
+						cycleEdges: [['UF', 'UL'], ['UR', 'UB']],
+						algorithms: [
+							{
+								notation: "M' U (M2' U M2') U (M' U2 M2') [U']",
+							},
+							{
+								notation: "M' U' M2 U' M2 U' M' U2 M2 [U]",
+								rotation: 1,
+							},
+							{
+								notation: "(M2' U M2' U) (M' U2) (M2' U2 M') [U2]",
+								rotation: 1,
+							},
+							{
+								notation: "M2 U' M2 U' M' U2 M2 U2 M' [U2]",
+							}
+						]
+					}
+				],
+			},
+		],
+	},
 	{
 		label_en: 'PLL (Permute Last Layer)',
 		label_de: 'PLL (Letzte Ebene permutieren)',
 		class: 'step',
-		step: 'pll',
+		step: 'PLL',
 		stickering: 'PLL',
 		subsections: [
 			{
@@ -835,11 +952,16 @@ window.addEventListener('load', () => {
 		switcher.onclick = () => switchLanguage(switcher);
 	}
 
+	for (const switcher of document.getElementsByClassName('method-switch')) {
+		switcher.onclick = () => switchMethod(switcher.value);
+	}
+
 	for (const section of sections) {
 		addSection(section);
 	}
 
 	translate();
+	switchMethod(method);
 
 	function switchLanguage(switcher) {
 		for (const other of document.getElementsByClassName('lingua')) {
@@ -849,6 +971,17 @@ window.addEventListener('load', () => {
 
 		lingua = switcher.dataset.lingua;
 		translate();
+	}
+
+	function switchMethod(newMethod) {
+		method = newMethod;
+		for (const elem of document.getElementsByClassName('step')) {
+			if (methods[method].includes(elem.dataset.step)) {
+				elem.style.display = 'block';
+			} else {
+				elem.style.display = 'none';
+			}
+		}
 	}
 
 	function translate() {
@@ -902,25 +1035,32 @@ window.addEventListener('load', () => {
 		makeTranslatable(link, section);
 		const li = document.createElement('li');
 		li.setAttribute('id', label);
+		li.setAttribute('class', 'step');
+		li.setAttribute('data-step', section.step);
 		li.appendChild(link);
 		nav.appendChild(li);
+
+		const container = document.createElement('div');
+		container.setAttribute('class', 'step');
+		container.setAttribute('data-step', section.step);
+		main.appendChild(container);
 
 		const h = document.createElement('h2');
 		h.setAttribute('id', id);
 		h.appendChild(document.createTextNode(label));
 		makeTranslatable(h, section);
-		main.appendChild(h);
+		container.appendChild(h);
 
 		const ul = document.createElement('ul');
 		ul.setAttribute('class', 'nav-section');
 		li.appendChild(ul);
 
 		for (const subsection of section.subsections) {
-			addSubsection(ul, subsection);
+			addSubsection(container, ul, subsection);
 		}
 	}
 
-	function addSubsection(navList, subsection) {
+	function addSubsection(stepContainer, navList, subsection) {
 		const label = subsection[translatedName('label')];
 		const id = makeId(label);
 
@@ -941,14 +1081,14 @@ window.addEventListener('load', () => {
 		h.setAttribute('id', id);
 		h.appendChild(document.createTextNode(label));
 		makeTranslatable(h, subsection);
-		main.appendChild(h);
+		stepContainer.appendChild(h);
 
 		for (const llcase of subsection.cases) {
-			addCase(ul, llcase);
+			addCase(stepContainer, ul, llcase);
 		}
 	}
 
-	function addCase(navList, llcase) {
+	function addCase(stepContainer, navList, llcase) {
 		const label = llcase['label'];
 		const id = makeId(label);
 
@@ -967,7 +1107,7 @@ window.addEventListener('load', () => {
 		const h = document.createElement('h3');
 		h.setAttribute('id', id);
 		h.appendChild(document.createTextNode(label));
-		main.appendChild(h);
+		stepContainer.appendChild(h);
 
 		const container = document.createElement('div');
 		container.setAttribute('class', 'case');
@@ -977,7 +1117,7 @@ window.addEventListener('load', () => {
 		probability.appendChild(document.createTextNode('p = ' + llcase.probability));
 		container.appendChild(probability);
 
-		main.appendChild(container);
+		stepContainer.appendChild(container);
 
 		const defaultAlgorithms = llcase.algorithms.filter(a => a.default);
 		if (defaultAlgorithms.length) {
