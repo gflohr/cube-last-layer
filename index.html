@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Last Layer</title>
+		<title class="translatable"
+			data-content-en="Last Layer"
+			data-content-de="Letzte Ebene">Last Layer</title>
 		<style>
 body {
 	font-family: "Helvetica Neue", Arial, Sans-Serif;
@@ -49,12 +51,20 @@ li {
 
 .case-algorithm-container {
 	display: flex;
+	align-items: center;
 	margin-bottom: 1rem;
 	cursor: pointer;
+	font-weight: normal;
+	font-size: smaller;
 }
 
 .case-algorithm-container:hover {
 	background-color: #eeeeee;
+}
+
+.case-algorithm-container-selected {
+	font-weight: bold;
+	font-size: larger;
 }
 
 .case-algorithm-container-selected, .case-algorithm-container-selected:hover {
@@ -86,6 +96,26 @@ li {
 	margin-left: 1rem;
 }
 
+.lingua-selector {
+	display: flex;
+}
+
+.lingua {
+	border: 3px solid transparent;
+	height: 15px;
+}
+
+.lingua:hover {
+	cursor: pointer;
+}
+
+.lingua-selected {
+	border: 3px solid #ddd;
+}
+
+.lingua-selected:hover {
+	cursor: default;
+}
 		</style>
 	</head>
 	<body>
@@ -97,23 +127,54 @@ li {
 			</ul>
 		</nav>
 		<main id="main">
-			<h1>Last Layer</h1>
+			<div class="lingua-selector">
+				<div class="lingua lingua-selected" data-lingua="en">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" width="30" height="15">
+						<clipPath id="s">
+								<path d="M0,0 v30 h60 v-30 z"/>
+						</clipPath>
+						<clipPath id="t">
+								<path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/>
+						</clipPath>
+						<g clip-path="url(#s)">
+								<path d="M0,0 v30 h60 v-30 z" fill="#012169"/>
+								<path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/>
+								<path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#C8102E" stroke-width="4"/>
+								<path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/>
+								<path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/>
+						</g>
+					</svg>
+				</div>
+				<div class="lingua" data-lingua="de">
+					<svg xmlns="http://www.w3.org/2000/svg" width="25" height="15" viewBox="0 0 5 3">
+						<rect id="black_stripe" width="5" height="3" y="0" x="0" fill="#000"/>
+						<rect id="red_stripe" width="5" height="2" y="1" x="0" fill="#D00"/>
+						<rect id="gold_stripe" width="5" height="1" y="2" x="0" fill="#FFCE00"/>
+					</svg>
+				</div>
+			</div>
+			<h1 class="translatable"
+				data-content-en="Last Layer"
+				data-content-de="Letzte Ebene">Last Layer</h1>
 		</main>
-		<!-- <script src="https://cdn.cubing.net/js/cubing/twisty" type="module"></script> -->
 		<script src="https://cdn.cubing.net/js/cubing/twisty" type="module"></script>
 		<script src="jquery-3.6.3.min.js"></script>
 		<script src="roofpig_and_three.min.js"></script>
 		<script type="module">
 "use strict";
 
+let lingua = 'en';
+
 const sections = [
 	{
-		label_en: 'PLL',
+		label_en: 'PLL (Permute Last Layer)',
+		label_de: 'PLL (Letzte Ebene permutieren)',
 		class: 'pll',
 		stickering: 'PLL',
 		subsections: [
 			{
 				label_en: 'Edges Only',
+				label_de: 'Nur Kanten',
 				cases: [
 				{
 						label: 'Ub',
@@ -201,6 +262,7 @@ const sections = [
 			},
 			{
 				label_en: 'Corners Only',
+				label_de: 'Nur Ecken',
 				cases: [
 					{
 						label: 'Aa',
@@ -260,6 +322,7 @@ const sections = [
 			},
 			{
 				label_en: 'Swap Two Adjacent Corners and Two Edges',
+				label_de: 'Zwei nebeneinanderliegende Ecken unc zwei Kanten',
 				cases: [
 					{
 						label: 'Ra',
@@ -744,16 +807,41 @@ const cornerPositions = {
 
 window.addEventListener('load', () => {
 	let cube;
+	cube = CubeAnimation.create_in_dom('#cube', 'alg=', "class='roofpig'");
 
 	const nav = document.getElementById('nav');
 	const main = document.getElementById('main');
+
+	for (const switcher of document.getElementsByClassName('lingua')) {
+		switcher.onclick = () => switchLanguage(switcher);
+	}
 
 	for (const section of sections) {
 		addSection(section);
 	}
 
+	translate();
+
+	function switchLanguage(switcher) {
+		for (const other of document.getElementsByClassName('lingua')) {
+			other.setAttribute('class', 'lingua');
+		}
+		switcher.setAttribute('class', 'lingua lingua-selected');
+
+		lingua = switcher.dataset.lingua;
+		translate();
+	}
+
+	function translate() {
+		const dataAttribute = 'content'
+			+ lingua.charAt(0).toUpperCase() + lingua.slice(1).toLowerCase();
+		for (const elem of document.getElementsByClassName('translatable')) {
+			elem.innerHTML = elem.dataset[dataAttribute];
+		}
+	}
+
 	function translatedName(label) {
-		return label + '_en';
+		return label + '_' + lingua;
 	}
 
 	function makeId(label) {
@@ -774,6 +862,17 @@ window.addEventListener('load', () => {
 		return id + suffix;
 	}
 
+	function makeTranslatable(elem, object) {
+		elem.dataset.contentEn = object.label_en;
+		elem.dataset.contentDe = object.label_de;
+		let classAttr = elem.getAttribute('class');
+		if (classAttr) {
+			elem.setAttribute('class', classAttr + ' translatable');
+		} else {
+			elem.setAttribute('class', 'translatable');
+		}
+	}
+
 	function addSection(section) {
 		const label = section[translatedName('label')];
 		const id = makeId(label);
@@ -781,6 +880,7 @@ window.addEventListener('load', () => {
 		const link = document.createElement('a');
 		link.setAttribute('href', '#' + id);
 		link.appendChild(document.createTextNode(label));
+		makeTranslatable(link, section);
 		const li = document.createElement('li');
 		li.setAttribute('id', label);
 		li.appendChild(link);
@@ -789,6 +889,7 @@ window.addEventListener('load', () => {
 		const h = document.createElement('h2');
 		h.setAttribute('id', id);
 		h.appendChild(document.createTextNode(label));
+		makeTranslatable(h, section);
 		main.appendChild(h);
 
 		const ul = document.createElement('ul');
@@ -807,6 +908,7 @@ window.addEventListener('load', () => {
 		const link = document.createElement('a');
 		link.setAttribute('href', '#' + id);
 		link.appendChild(document.createTextNode(label));
+		makeTranslatable(link, subsection);
 		const li = document.createElement('li');
 		li.setAttribute('id', label);
 		li.appendChild(link);
@@ -819,6 +921,7 @@ window.addEventListener('load', () => {
 		const h = document.createElement('h3');
 		h.setAttribute('id', id);
 		h.appendChild(document.createTextNode(label));
+		makeTranslatable(h, subsection);
 		main.appendChild(h);
 
 		for (const llcase of subsection.cases) {
@@ -906,9 +1009,7 @@ window.addEventListener('load', () => {
 				config += setupmoves;
 			}
 			config += '|flags=showalg|algdisplay=2p';
-			console.log(config);
 			cube = CubeAnimation.create_in_dom('#cube', config, "class='roofpig'");
-
 		};
 
 		var algorithmDiv = document.createElement('div');
