@@ -64,10 +64,20 @@ li {
 
 .case-algorithm-canvas {
 	order: 1;
+	padding-left: 110px;
 }
 
-.case-default-button {
-	order: 2
+.case-algorithm-container .case-algorithm-canvas canvas {
+	display: none;
+}
+
+.case-algorithm-container-selected .case-algorithm-canvas {
+	padding-left: 0px;
+}
+
+.case-algorithm-container-selected .case-algorithm-canvas canvas {
+	padding-left: 0px;
+	display: block;
 }
 
 .case-algorithm {
@@ -902,7 +912,7 @@ window.addEventListener('load', () => {
 		canvasDiv.setAttribute('class', 'case-algorithm-canvas');
 		canvasDiv.appendChild(visualiseLastLayer(llcase, algorithm.rotation));
 		container.appendChild(canvasDiv);
-		
+
 		return container;
 	}
 
