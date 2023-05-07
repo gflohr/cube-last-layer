@@ -203,7 +203,6 @@ const sections = [
 		label_de: 'EOLL (Kanten letzte Ebene orientieren)',
 		class: 'step',
 		step: 'EOLL',
-		stickering: 'OLL-Edges',
 		subsections: [
 			{
 				label_en: 'Two Edges',
@@ -213,7 +212,7 @@ const sections = [
 						label_en: 'I-Shape',
 						label_de: 'I-Form',
 						probability: '2/7',
-						flipEdges: [['UL', 'UR']],
+						flipEdges: ['UF', 'UB'],
 						algorithms: [
 							{
 								notation: "F (R U R' U') F'",
@@ -239,7 +238,6 @@ const sections = [
 		label_de: 'EPLL (Kanten letzte Ebene permutieren)',
 		class: 'step',
 		step: 'EPLL',
-		stickering: 'PLL',
 		subsections: [
 			{
 				label_en: 'Three Edges',
@@ -342,7 +340,6 @@ const sections = [
 		label_de: 'PLL (Letzte Ebene permutieren)',
 		class: 'step',
 		step: 'PLL',
-		stickering: 'PLL',
 		subsections: [
 			{
 				label_en: 'Edges Only',
@@ -532,6 +529,7 @@ const cubeColors = {
 	B: 'rgb(240, 142, 53)',  // orange
 	R: 'rgb(117, 250, 76)',  // green
 	L: 'rgb(50, 104, 246)',  // blue
+	G: 'rgb(128, 128, 128)', // grey for irrelevant stickers
 };
 
 const faceIndices = {
@@ -1092,11 +1090,11 @@ window.addEventListener('load', () => {
 		li.appendChild(ul);
 
 		for (const subsection of section.subsections) {
-			addSubsection(container, ul, subsection, section.stickering);
+			addSubsection(container, ul, subsection, section.step);
 		}
 	}
 
-	function addSubsection(stepContainer, navList, subsection, stickering) {
+	function addSubsection(stepContainer, navList, subsection, step) {
 		const label = subsection[translatedName('label')];
 		const id = makeId(label);
 
@@ -1120,11 +1118,11 @@ window.addEventListener('load', () => {
 		stepContainer.appendChild(h);
 
 		for (const llcase of subsection.cases) {
-			addCase(stepContainer, ul, llcase, stickering);
+			addCase(stepContainer, ul, llcase, step);
 		}
 	}
 
-	function addCase(stepContainer, navList, llcase, stickering) {
+	function addCase(stepContainer, navList, llcase, step) {
 		const label = llcase[translatedName('label')] || llcase['label'];
 		const id = makeId(label);
 
@@ -1163,11 +1161,11 @@ window.addEventListener('load', () => {
 		}
 
 		for (const algorithm of llcase.algorithms) {
-			container.appendChild(addAlgorithm(llcase, algorithm, id, stickering));
+			container.appendChild(addAlgorithm(llcase, algorithm, id, step));
 		}
 	}
 
-	function addAlgorithm(llcase, algorithm, id, stickering) {
+	function addAlgorithm(llcase, algorithm, id, step) {
 		const container = document.createElement('div');
 		if (algorithm.isDefault) {
 			container.setAttribute(
@@ -1188,7 +1186,7 @@ window.addEventListener('load', () => {
 			}
 			const cleanAlgorithm = algorithm.notation.replace(/[^ UDFBRLMESxyz2']/ig, '');
 			let config = "alg=" + cleanAlgorithm;
-			if ('OLL-Edges' === stickering) {
+			if ('EOLL' === step) {
 				config += '|solved=D DFL DF DFR DR DBR DB DBL DL DFL F R B L FR BR BL FL'
 					+ '|colored=U Uf Ur Ul Ub';
 			}
@@ -1218,7 +1216,7 @@ window.addEventListener('load', () => {
 
 		var canvasDiv = document.createElement('div');
 		canvasDiv.setAttribute('class', 'case-algorithm-canvas');
-		canvasDiv.appendChild(visualiseLastLayer(llcase, algorithm.rotation));
+		canvasDiv.appendChild(visualiseLastLayer(llcase, algorithm.rotation, step));
 		container.appendChild(canvasDiv);
 
 		return container;
@@ -1242,7 +1240,7 @@ window.addEventListener('load', () => {
 		return cycledSwaps;
 	}
 
-	function visualiseLastLayer(llcase, rotation) {
+	function visualiseLastLayer(llcase, rotation, step) {
 		var canvas = document.createElement('canvas');
 
 		canvas.setAttribute('width', cubeWidth);
@@ -1252,7 +1250,7 @@ window.addEventListener('load', () => {
 
 		const ctx = canvas.getContext('2d');
 
-		var cube = {
+		let cube = {
 			edges: ['UF', 'UL', 'UB', 'UR'],
 			edgeOrientations: [0, 0, 0, 0],
 			corners: ['UFR', 'UFL', 'UBL', 'UBR'],
@@ -1263,6 +1261,14 @@ window.addEventListener('load', () => {
 			for (let cycle of llcase.cycleEdges) {
 				cycle = cycle.map(edge => edgePositions[edge]);
 				cube = cycleEdges(cube, cycle);
+			}
+		}
+
+		if (llcase.flipEdges) {
+			for (let i = 0; i < cube.edges.length; ++i) {
+				if (llcase.flipEdges.includes(cube.edges[i])) {
+					cube.edgeOrientations[i] = 1;
+				}
 			}
 		}
 
@@ -1278,8 +1284,10 @@ window.addEventListener('load', () => {
 		}
 
 		for (var i = 0; i < 4; ++i) {
-			drawCubelet(ctx, cube.corners[i], cube.cornerOrientations[i], cubeCorners[i]);
-			drawCubelet(ctx, cube.edges[i], cube.edgeOrientations[i], cubeEdges[i]);
+			drawCubelet(ctx, cube.corners[i], cube.cornerOrientations[i],
+				cubeCorners[i], step);
+			drawCubelet(ctx, cube.edges[i], cube.edgeOrientations[i],
+				cubeEdges[i], step);
 		}
 
 		const cubeCenter = [
@@ -1365,7 +1373,7 @@ window.addEventListener('load', () => {
 		return cube;
 	}
 
-	function drawCubelet(ctx, faces, rot, squares) {
+	function drawCubelet(ctx, faces, rot, squares, step) {
 		faces = cycleArray(faces, rot);
 		for (var j = 0; j < squares.length; ++j) {
 			const points = squares[j];
@@ -1375,10 +1383,32 @@ window.addEventListener('load', () => {
 				ctx.lineTo(points[k][0], points[k][1]);
 			}
 			ctx.lineTo(points[0][0], points[0][1]);
-			ctx.fillStyle = cubeColors[faces[j]];
+			ctx.fillStyle = stickerColor(faces[j], faces, step);
 			ctx.fill();
 			ctx.stroke();
 		}
+	}
+
+	function stickerColor(face, piece, step) {
+		switch(step) {
+			case 'OLL':
+				if (face != 'U') {
+					face = 'G';
+				}
+				break;
+			case 'EOLL':
+				if (face !== 'U' || 3 === piece.length) {
+					face = 'G';
+				}
+				break;
+			case 'OCLL':
+				if (face !== 'U' || 2 === piece.length) {
+					face = 'G';
+				}
+				break;
+		};
+
+		return cubeColors[face];
 	}
 
 	function drawArrow (ctx, p1, p2) {
