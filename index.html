@@ -222,13 +222,43 @@ const sections = [
 							},
 						],
 					},
+					{
+						label_en: 'L-Shape',
+						label_de: 'L-Form',
+						probability: '4/7',
+						flipEdges: ['UL', 'UB'],
+						algorithms: [
+							{
+								notation: "f (R U R' U') f'",
+							},
+							{
+								// FIXME! Rotation doesn't work!
+								notation: "F (U R U' R') F'",
+								rotation: 2,
+							},
+							{
+								notation: "r (U R' U') r' (R U R U' R')",
+								rotation: 2,
+							},
+						],
+					},
 				],
 			},
 			{
 				label_en: 'Four Edges',
 				label_de: 'Vier Kanten',
 				cases: [
-
+					{
+						label_en: 'Dot-Shape',
+						label_de: 'Punkt-Form',
+						probability: '1/7',
+						flipEdges: ['UF', 'UL', 'UB', 'UR'],
+						algorithms: [
+							{
+								notation: "F (R U R' U') F' f (R U R' U') f'",
+							},
+						],
+					}
 				],
 			},
 		],
