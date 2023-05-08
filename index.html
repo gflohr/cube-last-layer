@@ -530,6 +530,71 @@ const sections = [
 		],
 	},
 	{
+		label_en: 'CPOLL (Corner Permutation of Last Layer)',
+		label_de: 'CPOLL (Ecken letzte Ebene permutieren)',
+		class: 'step',
+		step: 'CPOLL',
+		subsections: [
+			{
+				label_en: 'Zwei Ecken',
+				label_de: 'Zwei Ecken',
+				cases: [
+					{
+						label: 'Diagonal',
+						probability: '?',
+						detection_en: 'There are no headlights.',
+						detection_de: 'Es gibt keine Scheinwerfer.',
+						cycleCorners: [['UFR', 'UBL']],
+						algorithms: [
+						{
+								notation: "(F R) (U' R' U' R U) (R' F') + (R U R' U') (R' F R F')",
+								label_en: 'Second part is sexy move plus sledgehammer. Try to rotate the cube or just the U face so that the front and right edge are solved because that let\'s you skip the last step!',
+								label_de: 'Zweiter Teil ist der Sexy Move plus Sledgehammer. Versuche den Würfel oder die U-Seite so zu drehen, dass die vordere und rechte Kante gelöst sind, weil dann der letzte Schritt übersprungen werden kann!',
+							},
+							{
+								notation: "(F' L') (U L U L' U') (L F) + (L' U' L U) (L F' L' F)",
+								rotation: 1,
+								label_en: 'Second part is sexy move plus sledgehammer. Try to rotate the cube or just the U face so that the front and left edge are solved because that let\'s you skip the last step!',
+								label_de: 'Zweiter Teil ist der Sexy Move plus Sledgehammer. Versuche den Würfel oder die U-Seite so zu drehen, dass die vordere und linke Kante gelöst sind, weil dann der letzte Schritt übersprungen werden kann!',
+							},
+						],
+					},
+					{
+						label: 'Nebeneinander',
+						probability: '?',
+						detection_en: 'There are exactly two headlights.',
+						detection_de: 'Es gibt exakt zwei Scheinwerfer.',
+						cycleCorners: [['UFR', 'UBR']],
+						algorithms: [
+						{
+								notation: "(R U R' U') (R' F) + R2 + (U' R' U' R U) (R' F')",
+								label_en: 'The two parts of the diagonal case swapped but the sequence "R F\' F R" in the middle is optimized into just "R2".',
+								label_de: 'Die zwei Teile des Diagonal-Falls vertauscht, aber die Folge "R F\' F R" in der Mitte ist zu "R2" optimiert.',
+							},
+							{
+								notation: "(R U R' U') (R' F R F') + (F R U' R' U' R U) (R' F')",
+								label_en: 'The two parts of the diagonal case swapped. Do NOT use! Use the optimized algorithm above instead!',
+								label_de: 'Die zwei Teile des Diagonal-Falls vertauscht. Nicht verwenden! Der optimierte Algorithmus direkt hier vor ist besser!',
+							},
+							{
+								notation: "(L' U' L U) (L F') + L2 + (U L U L' U') (L F)",
+								rotation: 2,
+								label_en: 'The two parts of the diagonal case swapped but the sequence "L F F\' L\'" in the middle is optimized into just "L2".',
+								label_de: 'Die zwei Teile des Diagonal-Falls vertauscht, aber die Folge "L F F\' L\'" in der Mitte ist zu "L2" optimiert.',
+							},
+							{
+								notation: "(L' U' L U) (L F' L' F) + (F' L' U L U L' U') (L F)",
+								rotation: 2,
+								label_en: 'The two parts of the diagonal case swapped. Do NOT use! Use the optimized algorithm above instead!',
+								label_de: 'Die zwei Teile des Diagonal-Falls vertauscht. Nicht verwenden! Der optimierte Algorithmus direkt hier vor ist besser!',
+							},
+						],
+					},
+				],
+			},
+		],
+	},
+	{
 		label_en: 'EPLL (Edge Permutation Last Layer)',
 		label_de: 'EPLL (Kanten letzte Ebene permutieren)',
 		class: 'step',
@@ -1555,12 +1620,13 @@ window.addEventListener('load', () => {
 			}
 
 			let config = "alg=" + algorithm.canonical;
+			config += '|solved=D DFL DF DFR DR DBR DB DBL DL DFL F R B L FR BR BL FL';
 			if ('EOLL' === step) {
-				config += '|solved=D DFL DF DFR DR DBR DB DBL DL DFL F R B L FR BR BL FL'
-					+ '|colored=U Uf Ur Ul Ub';
+				config += '|colored=U Uf Ur Ul Ub';
+			} else if ('CPOLL' === step) {
+				config += '|colored=U UFR UFL UBR UBL'
 			} else if ('OLL' === step || 'OCLL' === step) {
-				config += '|solved=D DFL DF DFR DR DBR DB DBL DL DFL F R B L FR BR BL FL'
-					+ '|colored=u';
+				config += '|colored=u';
 			}
 			if (algorithm.rotation) {
 				let setupmoves = '|setupmoves=';
