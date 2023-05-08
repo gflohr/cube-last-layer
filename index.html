@@ -159,7 +159,7 @@ li {
 					data-content-de="Methode">Method</legend>
 				<div>
 					<input type="radio" name="method" value="CFOP" 
-						class="method-switch">
+						class="method-switch" checked>
 					<label for="CFOP"
 						class="translatable"
 					    data-content-en="CFOP"
@@ -167,7 +167,7 @@ li {
 				</div>
 				<div>
 					<input type="radio" name="method" value="CFOP-4-Look-LL"
-						class="method-switch" checked>
+						class="method-switch">
 					<label for="CFOP-4-Look-LL"
 						class="translatable"
 					    data-content-en="CFOP (4-Look-Last-Layer)"
@@ -182,7 +182,7 @@ li {
 "use strict";
 
 let lingua = 'en';
-let method = 'CFOP-4-Look-LL';
+let method = 'CFOP';
 
 const methods = {
 	CFOP: [
@@ -275,10 +275,7 @@ const sections = [
 					{
 						label_en: 'Pi',
 						label_de: 'Pi',
-						probability: '?',
-						// FIXME! Make that more intuitive! Translate
-						// clock-wise rotations into correct numbers, i.e.
-						// swap the number for UFL and UBL.
+						probability: '2/13',
 						flipCorners: {
 							UFR: 2,
 							UFL: 2,
@@ -659,6 +656,13 @@ const faceIndices = {
 	L: 3,
 };
 
+const cornerIndices = {
+	UFR: 0,
+	UFL: 1,
+	UBL: 2,
+	UBR: 3,
+}
+
 const swapRotations = [
 	{
 		UB: 'UB',
@@ -726,6 +730,8 @@ const cubeHeight = cubeWidth;
 const sideFaceWidth = 15;
 const cubeletWidth = (cubeWidth - 2 * sideFaceWidth) / 3;
 
+// The corners of the cube. All faces are drawn in clock-wise direction,
+// always starting with U.
 const cubeCorners = [
 	// Corner 0, UFR
 	[
@@ -739,12 +745,29 @@ const cubeCorners = [
 				cubeWidth - sideFaceWidth,
 				cubeWidth - sideFaceWidth - cubeletWidth,
 			],
-			[	cubeWidth - sideFaceWidth, cubeWidth - sideFaceWidth,
+			[	
+				cubeWidth - sideFaceWidth, cubeWidth - sideFaceWidth,
 			],
 			[
 				cubeWidth - sideFaceWidth - cubeletWidth,
 				cubeWidth - sideFaceWidth,
 			],
+		],
+		// R
+		[
+			[
+				cubeWidth - sideFaceWidth,
+				cubeWidth - sideFaceWidth - cubeletWidth,
+			],
+			[
+				cubeWidth, cubeWidth - sideFaceWidth - cubeletWidth,
+			],
+			[
+				cubeWidth, cubeWidth,
+			],
+			[
+				cubeWidth - sideFaceWidth, cubeWidth - sideFaceWidth
+			]
 		],
 		// F
 		[
@@ -761,22 +784,6 @@ const cubeCorners = [
 			[
 				cubeWidth - cubeletWidth - sideFaceWidth,
 				cubeWidth,
-			]
-		],
-		// R
-		[
-			[
-				cubeWidth - sideFaceWidth,
-				cubeWidth - sideFaceWidth - cubeletWidth,
-			],
-			[
-				cubeWidth, cubeWidth - sideFaceWidth - cubeletWidth,
-			],
-			[
-				cubeWidth, cubeWidth,
-			],
-			[
-				cubeWidth - sideFaceWidth, cubeWidth - sideFaceWidth
 			]
 		],
 	],
@@ -847,6 +854,21 @@ const cubeCorners = [
 				sideFaceWidth, sideFaceWidth + cubeletWidth,
 			],
 		],
+		// L
+		[
+			[
+				0, 0,
+			],
+			[
+				sideFaceWidth, sideFaceWidth,
+			],
+			[
+				sideFaceWidth, sideFaceWidth + cubeletWidth,
+			],
+			[
+				0, sideFaceWidth + cubeletWidth,
+			],
+		],
 		// B
 		[
 			[
@@ -862,21 +884,6 @@ const cubeCorners = [
 				sideFaceWidth, sideFaceWidth,
 			],
 		],
-		// L
-		[
-			[
-				0, 0,
-			],
-			[
-				sideFaceWidth, sideFaceWidth,
-			],
-			[
-				sideFaceWidth, sideFaceWidth + cubeletWidth,
-			],
-			[
-				0, sideFaceWidth + cubeletWidth,
-			],
-		]
 	],
 	// Corner 3, UBR.
 	[
@@ -1093,6 +1100,20 @@ const cornerPositions = {
 	UFL: 1,
 	UBL: 2,
 	UBR: 3,
+};
+
+const normalizedCorners = {
+	UFR: 'UFR',
+	URF: 'UFR',
+
+	UFL: 'UFL',
+	ULF: 'UFL',
+
+	UBL: 'UBL',
+	ULB: 'UBL',
+
+	UBR: 'UBR',
+	URB: 'UBR',
 };
 
 window.addEventListener('load', () => {
@@ -1364,6 +1385,7 @@ window.addEventListener('load', () => {
 	}
 
 	function visualiseLastLayer(llcase, rotation, step) {
+		//if (step === 'PLL') debugger;
 		if (!rotation) rotation = 0;
 
 		var canvas = document.createElement('canvas');
@@ -1403,30 +1425,28 @@ window.addEventListener('load', () => {
 			}
 		}
 
+		if (rotation) {
+			cube = rotateCube(cube, rotation);
+		}
+
+		// The corners are flipped after the cube is rotated because the
+		// orientations given refer to the final state of the cube.
 		if (llcase.flipCorners) {
 			const order = ['UFR', 'UFL', 'UBL', 'UBR'];
 			for (let corner in llcase.flipCorners) {
 				const index = order.indexOf(corner);
-				if (index < 0) {
-					console.log(corner + ' is not a last layer corner');
-					next;
-				}
-				if (llcase.flipCorners[corner] < 1
-				    || llcase.flipCorners[corner] > 2) {
-					console.log('invalid number (not 1 or 2) of flips for corner ' + corner);
-					next;
-				}
-				// We expect the number of clockwise flips. Correct that now
-				// to our internal use.
-				if (corner === 'UFR' || corner === 'UBL') {
-					llcase.flipCorners[corner] = -llcase.flipCorners[corner] + 3;
-				}
-				cube.cornerOrientations[index] = llcase.flipCorners[corner];
-			}
-		}
+				const orientation = llcase.flipCorners[index];
 
-		if (rotation) {
-			cube = rotateCube(cube, rotation);
+				// Which corner is now at the position?
+				const newCorner = cube.corners[index];
+				const normalizedCorner = normalizedCorners[newCorner];
+				if (normalizedCorner === undefined) {
+					throw new Error('flipped corner ' + corner + ' missing');
+				}
+
+				cube.cornerOrientations[order.indexOf(normalizedCorner)]
+					+= orientation;
+			}
 		}
 
 		for (var i = 0; i < 4; ++i) {
@@ -1472,22 +1492,11 @@ window.addEventListener('load', () => {
 		return canvas;
 	}
 
-	function flipCorner(corner) {
-		return corner[0] + corner[2] + corner[1];
-	}
-
 	function rotateCube(cube, rotation) {
 		cube.edges = cycleArray(cube.edges, rotation);
 		cube.edgeOrientations = cycleArray(cube.edgeOrientations, rotation);
 		cube.corners = cycleArray(cube.corners, rotation);
 		cube.cornerOrientations = cycleArray(cube.cornerOrientations, rotation);
-
-		// Odd?
-		if (rotation & 1) {
-			for (let i = 0; i < cube.corners.length; ++i) {
-				cube.corners[i] = flipCorner(cube.corners[i]);
-			}
-		}
 
 		return cube;
 	}
@@ -1505,24 +1514,16 @@ window.addEventListener('load', () => {
 	function cycleCorners(cube, cycle) {
 		const first = cube.corners[cycle[0]]
 		for (var i = 1; i < cycle.length; ++i) {
-			const flip = (cycle[i - 1] - cycle[i]) & 1;
 			cube.corners[cycle[i - 1]] = cube.corners[cycle[i]];
-			if (flip) {
-				cube.corners[cycle[i - 1]] = flipCorner(cube.corners[cycle[i - 1]]);
-			}
 		}
-		const flip = (cycle[cycle.length - 1] - cycle[0]) & 1;
-		if (flip) {
-			cube.corners[cycle[cycle.length - 1]] = flipCorner(first);
-		} else {
-			cube.corners[cycle[cycle.length - 1]] = first;
-		}
+		cube.corners[cycle[cycle.length - 1]] = first;
 
 		return cube;
 	}
 
 	function drawCubelet(ctx, faces, rot, squares, step) {
-		faces = cycleArray(faces, rot);
+		rot = rot % 3;
+		faces = cycleArray(faces, rot).join('');
 		for (var j = 0; j < squares.length; ++j) {
 			const points = squares[j];
 			ctx.beginPath();
@@ -1551,6 +1552,21 @@ window.addEventListener('load', () => {
 				}
 				break;
 		};
+
+		// UFR and UBL are in anti-clockwise direction.
+		if ('UFR' === piece) {
+			if ('F' === face) {
+				face = 'R';
+			} else if ('R' === face) {
+				face = 'F';
+			}
+		} else if ('UBL' === piece) {
+			if ('B' === face) {
+				face = 'L';
+			} else if ('L' === face) {
+				face = 'B';
+			}
+		}
 
 		return cubeColors[face];
 	}
