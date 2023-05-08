@@ -159,7 +159,7 @@ li {
 					data-content-de="Methode">Method</legend>
 				<div>
 					<input type="radio" name="method" value="CFOP" 
-						class="method-switch" checked>
+						class="method-switch">
 					<label for="CFOP"
 						class="translatable"
 					    data-content-en="CFOP"
@@ -167,7 +167,7 @@ li {
 				</div>
 				<div>
 					<input type="radio" name="method" value="CFOP-4-Look-LL"
-						class="method-switch">
+						class="method-switch" checked>
 					<label for="CFOP-4-Look-LL"
 						class="translatable"
 					    data-content-en="CFOP (4-Look-Last-Layer)"
@@ -182,7 +182,7 @@ li {
 "use strict";
 
 let lingua = 'en';
-let method = 'CFOP';
+let method = 'CFOP-4-Look-LL';
 
 const methods = {
 	CFOP: [
@@ -259,6 +259,39 @@ const sections = [
 							},
 						],
 					}
+				],
+			},
+		],
+	},
+	{
+		label_en: 'OCLL (Orient Corners Last Layer)',
+		label_de: 'OCLL (Ecken letzte Ebene orientieren)',
+		class: 'step',
+		step: 'OCLL',
+		subsections: [
+			{
+				label_en: 'Four Corners',
+				label_de: 'Vier Ecken',
+				cases: [
+					{
+						label_en: 'Pi',
+						label_de: 'Pi',
+						probability: '?',
+						// FIXME! Make that more intuitive! Translate
+						// clock-wise rotations into correct numbers, i.e.
+						// swap the number for UFL and UBL.
+						flipCorners: {
+							UFR: 2,
+							UFL: 2,
+							UBL: 1,
+							UBR: 1,
+						},
+						algorithms: [
+							{
+								notation: "R U2' R2' U' R2 U' R2' U2' R",
+							},
+						],
+					},
 				],
 			},
 		],
@@ -1219,6 +1252,9 @@ window.addEventListener('load', () => {
 			if ('EOLL' === step) {
 				config += '|solved=D DFL DF DFR DR DBR DB DBL DL DFL F R B L FR BR BL FL'
 					+ '|colored=U Uf Ur Ul Ub';
+			} else if ('OLL' === step || 'OCLL' === step) {
+				config += '|solved=D DFL DF DFR DR DBR DB DBL DL DFL F R B L FR BR BL FL'
+					+ '|colored=u';
 			}
 			if (algorithm.rotation) {
 				let setupmoves = '|setupmoves=';
@@ -1306,6 +1342,28 @@ window.addEventListener('load', () => {
 			for (let cycle of llcase.cycleCorners) {
 				cycle = cycle.map(corner => cornerPositions[corner]);
 				cube = cycleCorners(cube, cycle);
+			}
+		}
+
+		if (llcase.flipCorners) {
+			const order = ['UFR', 'UFL', 'UBL', 'UBR'];
+			for (let corner in llcase.flipCorners) {
+				const index = order.indexOf(corner);
+				if (index < 0) {
+					console.log(corner + ' is not a last layer corner');
+					next;
+				}
+				if (llcase.flipCorners[corner] < 1
+				    || llcase.flipCorners[corner] > 2) {
+					console.log('invalid number (not 1 or 2) of flips for corner ' + corner);
+					next;
+				}
+				// We expect the number of clockwise flips. Correct that now
+				// to our internal use.
+				if (corner === 'UFR' || corner === 'UBL') {
+					llcase.flipCorners[corner] = -llcase.flipCorners[corner] + 3;
+				}
+				cube.cornerOrientations[index] = llcase.flipCorners[corner];
 			}
 		}
 
@@ -1422,17 +1480,13 @@ window.addEventListener('load', () => {
 	function stickerColor(face, piece, step) {
 		switch(step) {
 			case 'OLL':
+			case 'OCLL':
 				if (face != 'U') {
 					face = 'G';
 				}
 				break;
 			case 'EOLL':
 				if (face !== 'U' || 3 === piece.length) {
-					face = 'G';
-				}
-				break;
-			case 'OCLL':
-				if (face !== 'U' || 2 === piece.length) {
 					face = 'G';
 				}
 				break;
