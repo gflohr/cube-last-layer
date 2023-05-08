@@ -1111,18 +1111,28 @@ window.addEventListener('load', () => {
 	const main = document.getElementById('main');
 
 	for (const switcher of document.getElementsByClassName('lingua')) {
-		switcher.onclick = () => switchLanguage(switcher);
+		switcher.onclick = () => onLanguageSwitch(switcher);
 	}
 
 	for (const switcher of document.getElementsByClassName('method-switch')) {
-		switcher.onclick = () => switchMethod(switcher.value);
+		switcher.onchange = () => switchMethod(switcher.value);
 	}
 
 	for (const section of sections) {
 		addSection(section);
 	}
 
-	translate();
+	const newLingua = localStorage.getItem('lingua');
+	if (['en', 'de'].includes(newLingua)) {
+		lingua = newLingua;
+	}
+
+	const newMethod = localStorage.getItem('method');
+	if (methods.hasOwnProperty(newMethod)) {
+		method = newMethod;
+	}
+
+	switchLanguage(lingua);
 	switchMethod(method);
 
 	function createRoofpig(parent, config, attributes) {
@@ -1141,18 +1151,36 @@ window.addEventListener('load', () => {
 		return obj;
 	}
 
-	function switchLanguage(switcher) {
-		for (const other of document.getElementsByClassName('lingua')) {
-			other.setAttribute('class', 'lingua');
-		}
-		switcher.setAttribute('class', 'lingua lingua-selected');
+	function onLanguageSwitch(switcher) {
+		newLingua = switcher.dataset.lingua;
+		switchLanguage(newLingua);
+	}
 
-		lingua = switcher.dataset.lingua;
+	function switchLanguage(newLingua) {
+		for (const other of document.getElementsByClassName('lingua')) {
+			const l = other.dataset.lingua;
+			if (l === newLingua) {
+				other.setAttribute('class', 'lingua lingua-selected');
+			} else {
+				other.setAttribute('class', 'lingua');
+			}
+		}
+
+		lingua = newLingua;
+		localStorage.setItem('lingua', lingua);
+
 		translate();
 	}
 
 	function switchMethod(newMethod) {
 		method = newMethod;
+		localStorage.setItem('method', method);
+		for (const switcher of document.getElementsByClassName('method-switch')) {
+			if (switcher.value === method)
+				switcher.setAttribute('checked', 'checked');
+			else
+				switcher.removeAttribute('checked');
+		}
 		for (const elem of document.getElementsByClassName('step')) {
 			if (methods[method].includes(elem.dataset.step)) {
 				elem.style.display = 'block';
