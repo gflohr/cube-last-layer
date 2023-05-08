@@ -232,7 +232,6 @@ const sections = [
 								notation: "f (R U R' U') f'",
 							},
 							{
-								// FIXME! Rotation doesn't work!
 								notation: "F (U R U' R') F'",
 								rotation: 2,
 							},
@@ -1420,7 +1419,9 @@ window.addEventListener('load', () => {
 
 	function rotateCube(cube, rotation) {
 		cube.edges = cycleArray(cube.edges, rotation);
+		cube.edgeOrientations = cycleArray(cube.edgeOrientations, rotation);
 		cube.corners = cycleArray(cube.corners, rotation);
+		cube.cornerOrientations = cycleArray(cube.cornerOrientations, rotation);
 
 		// Odd?
 		if (rotation & 1) {
