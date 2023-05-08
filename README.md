@@ -71,10 +71,12 @@ with the author.
 
 ## Why is this Better than Algorithm Collection XYZ?
 
-There are two main advantages:
+These are the main advantages:
 
 1. All algorithms are animated.
-2. If your favourite algorithm requires a turn of the U layer, the animation automatically reflects the correct perspective whereas other lists contain awkward `y` turns.
+2. Your favourite algorithm is remembered.
+3. If your favourite algorithm requires a turn of the U layer, the animation automatically reflects the correct perspective whereas other lists contain awkward `y` turns.
+4. The sidebar navigation allows you to quickly access the case that you are interested in.
 
 ## Bugs and Caveats
 
