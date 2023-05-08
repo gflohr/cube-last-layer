@@ -7,6 +7,7 @@
 		<style>
 body {
 	font-family: "Helvetica Neue", Arial, Sans-Serif;
+	font-size: 1.2rem;
 	display: flex;
 }
 
@@ -17,10 +18,7 @@ nav {
 	position: sticky;
 	padding: 1rem;
 }
-twisty-player {
-	width: 18rem;
-	border: 1px solid grey;
-}
+
 main {
 	flex-grow: 1;
 	padding: 1rem;
@@ -42,6 +40,14 @@ ul {
 
 li {
 	padding-left: 0;
+}
+
+.remark {
+	margin-bottom: 1rem;
+}
+
+.important-algorithm {
+	cursor: pointer;
 }
 
 .case-probability {
@@ -116,7 +122,7 @@ li {
 }
 
 .lingua {
-	border: 3px solid transparent;
+	border: 0.2rem solid transparent;
 	height: 15px;
 }
 
@@ -125,7 +131,8 @@ li {
 }
 
 .lingua-selected {
-	border: 3px solid #ddd;
+	border: 0.2rem solid #bbb;
+	font-size: 1rem;
 }
 
 .lingua-selected:hover {
@@ -189,8 +196,98 @@ li {
 						data-content-de="CFOP (letzte Ebene 4-stufig)">Zweistufiges OLL-PLL</label>
 				</div>
 			</fieldset>
+			<div>
+				<h2 class="translatable"
+					data-content-en="Notes"
+					data-content-de="Hinweise"></h2>
+				<h3 class="translatable"
+					data-content-en="General"
+					data-content-de="Allgemeines"></h3>
+				<div class="translatable remark"
+					data-content-en="You can click on any algorithm in order to select it as your favourite and replay it on the cube to the left."
+					data-content-de="Wenn du auf einen beliebigen Algorithmus klickst, speicherst du ihn als bevorzugten Algorithmus und kannst am Würfel links alle Drehungen abspielen."></div>
+				<div class="translatable remark"
+					data-content-en="In PLL (and CPOLL), the displayed side face stickers are just examples. The last layer can be rotated in any way!"
+					data-content-de="Bei PLL (und CPOLL) sind die dargestellten Seitensticker nur Beispiele. Die letzte Ebene kann beliebig gedreht sein."></div>
+				<div class="translatable remark"
+					data-content-en="Do not waste time turning the lower two layers before the algorithms below to match the displayed cube. Especially for PLL (and CPOLL) just wait (or anticipate), and Adjust the Upper Face (AUF) with a final U turn.  If the algorithm ends with a U turn, it is put in [angle brackets] because it can be replaced by an arbitrary U turn or be skipped altogether, depending on the rotation of the first two layers."
+					data-content-de="Verschwende keine Zeit damit, die unteren beiden Ebenen so zu drehen, dass sie dem dargestellten Würfel entsprechen. Besonders für PLL (und CPOLL) warte (oder wisse, was kommt), und löse den Würfel mit einer finalen U-Drehung (AUF = Adjust Upper Face). Falls der Algorithmus mit einer U-Drehung endet, steht diese in [eckigen Klammern], weil sie je nach Rotation der ersten beiden Ebene durch eine beliebige andere U-Drehung ersetzt oder auch ganz weggelassen werden kann."></div>
+				<h3 class="translatable"
+					data-content-en="Important Algorithms"
+					data-content-de="Wichtige Algorithmen"></h3>
+				<div class="translatable"
+					data-content-en="You can click on the algorithm in order to replay it on the cube to the left."
+					data-content-de="Wenn du auf den Algorithmus klickst, kannst du am Würfel links alle Drehungen abspielen."></div>
+				<h4 class="translatable"
+					data-content-en="Sexy Move"
+					data-content-de="Sexy Move"></h4>
+				<div class="important-algorithm">
+					<span class="translatable"
+						data-content-en="Right:"
+						data-content-de="Rechts:"></span>
+					<span>R U R' U'</span>
+				</div>
+				<div class="important-algorithm">
+					<span class="translatable"
+						data-content-en="Left:"
+						data-content-de="Links:"></span>
+					<span>L' U' L U</span>
+				</div>
+				<h4 class="translatable"
+					data-content-en="Reverse Sexy Move"
+					data-content-de="Umgekehrter Sexy Move"></h4>
+				<div class="translatable remark"
+					data-content-en="This is not the sexy move turned backwards but the move that undoes the sexy move."
+					data-content-de="Das ist nicht der Sexy Move in umgekehrter Reihenfolge, sondern der Zug, der den Sexy Move rückgängig macht.">
+				</div>
+				<div class="important-algorithm">
+					<span class="translatable"
+						data-content-en="Right:"
+						data-content-de="Rechts:"></span>
+					<span>U R U' R'</span>
+				</div>
+				<div class="important-algorithm">
+					<span class="translatable"
+						data-content-en="Left:"
+						data-content-de="Links:"></span>
+					<span>U' L' U L</span>
+				</div>
+				<h4 class="translatable"
+					data-content-en="Sledgehammer"
+					data-content-de="Vorschlaghammer"></h4>
+				<div class="important-algorithm">
+					<span class="translatable"
+						data-content-en="Right:"
+						data-content-de="Rechts:"></span>
+					<span>R' F R F'</span>
+				</div>
+				<div class="important-algorithm">
+					<span class="translatable"
+						data-content-en="Left:"
+						data-content-de="Links:"></span>
+					<span>L F' L' F</span>
+				</div>
+				<h4 class="translatable"
+					data-content-en="Hedgeslammer (reverse sledgehammer)"
+					data-content-de="Hedgeslammer (umgekehrter Sledgehammer/Hedgeslammer)"></h4>
+				<div class="translatable remark"
+					data-content-en="This is not the sledgehammer turned backwards but the move that undoes the sledgehammer."
+					data-content-de="Das ist nicht der Sledgehammer in umgekehrter Reihenfolge, sondern der Zug, der den Sledgehammer rückgängig macht.">
+				</div>
+				<div>
+					<span class="translatable"
+						data-content-en="Right:"
+						data-content-de="Rechts:"></span>
+					<span>U R U' R'</span>
+				</div>
+				<div>
+					<span class="translatable"
+						data-content-en="Left:"
+						data-content-de="Links:"></span>
+					<span>U' L' U L</span>
+				</div>
+			</div>
 		</main>
-		<script src="https://cdn.cubing.net/js/cubing/twisty" type="module"></script>
 		<script src="jquery-3.6.3.min.js"></script>
 		<script src="roofpig_and_three.min.js"></script>
 		<script type="module">
@@ -1359,6 +1456,10 @@ window.addEventListener('load', () => {
 		switcher.onchange = () => switchMethod(switcher.value);
 	}
 
+	for (const div of document.getElementsByClassName('important-algorithm')) {
+		div.onclick = () => displayImportantAlgorithm(div);
+	}
+
 	for (const section of sections) {
 		addSection(section);
 	}
@@ -1375,6 +1476,15 @@ window.addEventListener('load', () => {
 
 	switchLanguage(lingua);
 	switchMethod(method);
+
+	function displayImportantAlgorithm(div) {
+		const notation = div.getElementsByTagName('span')[1].innerText;
+		const config = 'alg=' + notation
+			+ '|setupmoves=' + notation
+			+ '|flags=showalg';
+		cube.remove();
+		cube = createRoofpig('#cube', config, 'class="roofpig"');
+	}
 
 	function createRoofpig(parent, config, attributes) {
 		let obj = CubeAnimation.create_in_dom(parent, config, attributes);
