@@ -36,7 +36,7 @@ two, all pieces of the last layer are brought to their correct location
 Alternatively, you can split OLL and PLL (or just one of them) into two
 steps. That requires fewer algorithms to memorize but is, of course, slower.
 
-The steps required are:
+The four steps required for this 4-Look OLL/PLL are:
 
 1. OLL
 	1. EOLL (Edge Orientation of Last Layer)
@@ -46,6 +46,9 @@ The steps required are:
 	2. EPLL (Edge Permutation Last Layer)
 
 You can switch between both methods, and your decision will be saved.
+
+Note that you can also do full PLL but 2-look OLL or also vice versa
+full OLL and 2-look PLL.
 
 ### Selecting an Algorithm
 
