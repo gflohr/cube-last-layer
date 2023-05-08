@@ -293,6 +293,64 @@ const sections = [
 					},
 				],
 			},
+			{
+				label_en: 'Three corners',
+				label_de: 'Drei Ecken',
+				cases: [
+					{
+						label_en: 'Antisune',
+						label_de: 'Antisune',
+						probability: '2/13',
+						flipCorners: {
+							UFR: 1,
+							UFL: 1,
+							UBL: 1,
+						},
+						algorithms: [
+							{
+								notation: "R U2 R' U' R U' R'",
+							},
+							{
+								notation: "R' U' R U' R' U2 R",
+								rotation: 3,
+							},
+							{
+								notation: "L' U2' L U L' U L",
+								rotation: 3,
+							},
+							{
+								notation: "L U L' U L U2' L'",
+							},
+						],
+					},
+					{
+						label_en: 'Sune',
+						label_de: 'Sune',
+						probability: '2/13',
+						flipCorners: {
+							UFR: 2,
+							UBL: 2,
+							UBR: 2,
+						},
+						algorithms: [
+							{
+								notation: "R U R' U R U2 R'",
+							},
+							{
+								notation: "R' U2 R U R' U R",
+								rotation: 3,
+							},
+							{
+								notation: "L' U' L U' L' U2' L",
+								rotation: 3,
+							},
+							{
+								notation: "L U2' L' U' L U' L'",
+							},
+						],
+					}
+				],
+			}
 		],
 	},
 	{
@@ -1306,8 +1364,9 @@ window.addEventListener('load', () => {
 	}
 
 	function visualiseLastLayer(llcase, rotation, step) {
-		var canvas = document.createElement('canvas');
+		if (!rotation) rotation = 0;
 
+		var canvas = document.createElement('canvas');
 		canvas.setAttribute('width', cubeWidth);
 		canvas.setAttribute('height', cubeHeight);
 
