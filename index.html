@@ -312,11 +312,12 @@ const sections = [
 								rotation: 3,
 							},
 							{
-								notation: "L' U2' L U L' U L",
-								rotation: 3,
+								notation: "L U2' L' U' L U' L'",
+								rotation: 2,
 							},
 							{
-								notation: "L U L' U L U2' L'",
+								notation: "L' U' L U' L' U2' L",
+								rotation: 1,
 							},
 						],
 					},
@@ -338,11 +339,12 @@ const sections = [
 								rotation: 3,
 							},
 							{
-								notation: "L' U' L U' L' U2' L",
-								rotation: 3,
+								notation: "L U L' U L U2' L'",
+								rotation: 2,
 							},
 							{
-								notation: "L U2' L' U' L U' L'",
+								notation: "L' U2' L U L' U L",
+								rotation: 1,
 							},
 						],
 					}
@@ -1102,20 +1104,6 @@ const cornerPositions = {
 	UBR: 3,
 };
 
-const normalizedCorners = {
-	UFR: 'UFR',
-	URF: 'UFR',
-
-	UFL: 'UFL',
-	ULF: 'UFL',
-
-	UBL: 'UBL',
-	ULB: 'UBL',
-
-	UBR: 'UBR',
-	URB: 'UBR',
-};
-
 window.addEventListener('load', () => {
 	let cube;
 	cube = CubeAnimation.create_in_dom('#cube', 'alg=', "class='roofpig'");
@@ -1385,7 +1373,6 @@ window.addEventListener('load', () => {
 	}
 
 	function visualiseLastLayer(llcase, rotation, step) {
-		//if (step === 'PLL') debugger;
 		if (!rotation) rotation = 0;
 
 		var canvas = document.createElement('canvas');
@@ -1434,18 +1421,12 @@ window.addEventListener('load', () => {
 		if (llcase.flipCorners) {
 			const order = ['UFR', 'UFL', 'UBL', 'UBR'];
 			for (let corner in llcase.flipCorners) {
-				const index = order.indexOf(corner);
-				const orientation = llcase.flipCorners[index];
+				const orientation = llcase.flipCorners[corner];
 
-				// Which corner is now at the position?
-				const newCorner = cube.corners[index];
-				const normalizedCorner = normalizedCorners[newCorner];
-				if (normalizedCorner === undefined) {
-					throw new Error('flipped corner ' + corner + ' missing');
-				}
-
-				cube.cornerOrientations[order.indexOf(normalizedCorner)]
-					+= orientation;
+				// Change the orientation of the corner where the specified
+				// corner started.
+				const index = cube.corners.indexOf(corner);
+				cube.cornerOrientations[index] += orientation;
 			}
 		}
 
