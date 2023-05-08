@@ -1105,8 +1105,7 @@ const cornerPositions = {
 };
 
 window.addEventListener('load', () => {
-	let cube;
-	cube = CubeAnimation.create_in_dom('#cube', 'alg=', "class='roofpig'");
+	let cube = createRoofpig('#cube', 'alg=', 'class="roofpig"');
 
 	const nav = document.getElementById('nav');
 	const main = document.getElementById('main');
@@ -1125,6 +1124,22 @@ window.addEventListener('load', () => {
 
 	translate();
 	switchMethod(method);
+
+	function createRoofpig(parent, config, attributes) {
+		let obj = CubeAnimation.create_in_dom(parent, config, attributes);
+		if (!obj.dom) {
+			// This shuts up the false positive error message for file URLs.
+			const div = $('.roofpig')
+				.html('')
+				.text('')
+				.css('background', '');
+			
+			// And this makes remove() work.
+			obj.dom = { div: div };
+		}
+
+		return obj;
+	}
 
 	function switchLanguage(switcher) {
 		for (const other of document.getElementsByClassName('lingua')) {
@@ -1338,7 +1353,7 @@ window.addEventListener('load', () => {
 				config += setupmoves;
 			}
 			config += '|flags=showalg|algdisplay=2p';
-			cube = CubeAnimation.create_in_dom('#cube', config, "class='roofpig'");
+			cube = createRoofpig('#cube', config, "class='roofpig'");
 		};
 
 		var algorithmDiv = document.createElement('div');
