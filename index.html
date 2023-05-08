@@ -1273,6 +1273,7 @@ window.addEventListener('load', () => {
 		const link = document.createElement('a');
 		link.setAttribute('href', '#' + id);
 		link.appendChild(document.createTextNode(label));
+		makeTranslatable(link, llcase);
 		const li = document.createElement('li');
 		li.setAttribute('id', label);
 		li.appendChild(link);
@@ -1284,6 +1285,7 @@ window.addEventListener('load', () => {
 
 		const h = document.createElement('h3');
 		h.setAttribute('id', id);
+		makeTranslatable(h, llcase);
 		h.appendChild(document.createTextNode(label));
 		stepContainer.appendChild(h);
 
