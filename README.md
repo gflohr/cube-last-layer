@@ -59,9 +59,10 @@ the author.
 
 ### Language
 
-The "application" (well, umh, not really an application but t...) can
+The "application" (well, umh, not really an application but ...) can
 dynamically switch between the default language English and the alternative
-language German by clicking on one of the flags at the page top.
+language German by clicking on one of the flags at the page top.  Your choice
+is being remembered.
 
 If you want to add your own language, search the source code
 for the strings "_en" and "-en", duplicate the corresponding line, and modify
@@ -75,8 +76,9 @@ These are the main advantages:
 
 1. All algorithms are animated.
 2. Your favourite algorithm is remembered.
-3. If your favourite algorithm requires a turn of the U layer, the animation automatically reflects the correct perspective whereas other lists contain awkward `y` turns.
+3. If your favourite algorithm requires a turn of the U layer, the animation automatically reflects the correct perspective. You will never see awkward `y` turns at beginning and/or end of an algorithm.
 4. The sidebar navigation allows you to quickly access the case that you are interested in.
+5. You will also find algorithm versions for people that prefer `R` turns over `L` turns.
 
 ## Bugs and Caveats
 

@@ -898,40 +898,47 @@ const sections = [
 					{
 						label: 'Aa',
 						probability: '1/18',
+						detection_en: 'A full block and headlights in clock-wise direction.',
+						detection_de: 'Ein Block und ein Paar Scheinwerfer im Uhrzeigersinn hintereinander.',
 						cycleCorners: [['UBL', 'UBR', 'UFR']],
 						algorithms: [
 							{
 								notation: "x (R' U R') D2 (R U' R') D2 R2 [x']",
 							},
 							{
-								notation: "x' R2 D2 (R' U' R) D2 (R' U R') [x]",
+								notation: "x' (L' U L') D2' (L U' L') D2' L2' [x]",
+								rotation: 2,
+							},
+							{
+								notation: "x' R2 D2' (R' U' R) D2' (R' U R') [x]",
 								rotation: 1,
 							},
 							{
-								notation: "x L2 D2 L' U' L D2 L' U L' [x']",
-							},
-							{
-								notation: "x' L' U L' D2 L U' L' D2 L2 [x]",
+								notation: "x L2' D2 (L' U' L) D2 (L' U L') [x']",
+								rotation: 3,
 							},
 						],
 					},
 					{
 						label: 'Ab',
 						probability: '1/18',
+						detection_en: 'A full block und headlights in counterclock-wise direction.',
+						detection_de: 'Ein Block und ein Paar Scheinwerfer gegen den Uhrzeigersinn hintereinander.',
 						cycleCorners: [['UBR', 'UBL', 'UFR']],
 						algorithms: [
 							{
-								notation: "x R2' D2 (R U R') D2 (R U' R) [x]",
+								notation: "x R2' D2 (R U R') D2 (R U' R) [x']",
 							},
 							{
-								notation: "x' (R U' R) D2 (R' U R) D2 R2' [x]",
+								notation: "x' L2 D2' (L U L') D2' (L U' L) [x]",
+								rotation: 2,
+							},
+							{
+								notation: "x' (R U' R) D2' (R' U R) D2' R2' [x]",
 								rotation: 1,
 							},
 							{
-								notation: "x' L2 D2 L U L' D2 L U' L [x]",
-							},
-							{
-								notation: "x L U' L D2 L' U L D2 L2 [x']",
+								notation: "x (L U' L) D2 (L' U L) D2 L2 [x']",
 								rotation: 3,
 							},
 						],
@@ -939,6 +946,8 @@ const sections = [
 					{
 						label: 'E',
 						probability: '1/36',
+						detection_en: 'no block, all edges solved (no H perm or Z perm).',
+						detection_de: 'Kein Block, alle Kanten gelöst (nicht H-Perm oder Z-Perm).',
 						cycleCorners: [['UBL', 'UFL'], ['UBR', 'UFR']],
 						algorithms: [
 							{
@@ -953,11 +962,13 @@ const sections = [
 			},
 			{
 				label_en: 'Swap Two Adjacent Corners and Two Edges',
-				label_de: 'Zwei nebeneinanderliegende Ecken unc zwei Kanten',
+				label_de: 'Zwei nebeneinanderliegende Ecken und zwei Kanten',
 				cases: [
 					{
 						label: 'Ra',
 						probability: '1/18',
+						detection_en: 'Adjacent half block and headlights in clockwise direction.',
+						detection_de: 'Halber Block und Scheinwerfer im Uhrzeigersinn aneinandergrenzend.',
 						cycleCorners: [['UBR', 'UFR']],
 						cycleEdges: [['UL', 'UB']],
 						algorithms: [
@@ -965,11 +976,28 @@ const sections = [
 								notation: "(R U' R' U') (R U R D) (R' U' R D') (R' U2 R') [U'])",
 							},
 							{
-								notation: "(L U2 L' U2) L F' (L' U' L U) L F L2' [U]",
+								notation: "(L U2' L' U2) L F' (L' U' L U) (L F L2') [U]",
 								rotation: 3,
 							},
 							{
 								notation: "(R U R' F') (R U2' R' U2') (R' F R U) (R U2' R') [U']",
+							},
+							{
+								// Found by Herbert Kociemba's optimal solver.
+								notation: "(R U' R' U' R) (L' D L U' L') (D' L U' R') [U']",
+							},
+							{
+								// Found by Herbert Kociemba's optimal solver.
+								notation: "(R U L' D) L U L' D' R' L U R U R' [U]",
+								rotation: 1,
+							},
+							{
+								// Found by Herbert Kociemba's optimal solver.
+								notation: "L2 F' L' U' L U L U' F L F' U F L",
+							},
+							{
+								// Found by Herbert Kociemba's optimal solver.
+								notation: "L' F' U' F L' F' U L' U' L' U L F L2",
 							},
 						],
 					}
