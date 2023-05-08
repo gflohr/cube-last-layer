@@ -9,19 +9,11 @@ There is no real installation required. Either clone the repository or
 download a release, extract it to a location of your choice, and open
 the file `index.html` in your browser.
 
+There is also an [online version](https://gflohr.github.io/cube-last-layer/)
+hosted on GitHub Pages. It always contains the latest version from the main
+development branch.
+
 ## Usage
-
-### Language
-
-The "application" (well, umh, not really an application but t...) can
-dynamically switch between the default language English and the alternative
-language German.
-
-If you want to add your own language, search the source code
-for the strings "_en" and "-en", duplicate the corresponding line, and modify
-it for your language.  If you want to share your translation with the
-community, create a pull request or open an issue in order to get in touch
-with the author.
 
 ### Method
 
@@ -59,7 +51,23 @@ corner.
 
 Your choice of algorithm will be remembered for your next session.
 
-If you want to add an
+If you want to add an algorithm, check the sources in `index.html`, and
+search for another algorithm from the same case.  Adding your own version
+should be self-explanatory. If you want to share your algorithm, consider
+creating a pull request or file an issue in order to get in touch with
+the author.
+
+### Language
+
+The "application" (well, umh, not really an application but t...) can
+dynamically switch between the default language English and the alternative
+language German by clicking on one of the flags at the page top.
+
+If you want to add your own language, search the source code
+for the strings "_en" and "-en", duplicate the corresponding line, and modify
+it for your language.  If you want to share your translation with the
+community, create a pull request or open an issue in order to get in touch
+with the author.
 
 ## Why is this Better than Algorithm Collection XYZ?
 
@@ -75,4 +83,10 @@ lazy to give the project a proper structure after it had grown and evolved.
 
 Some of its odd style is owed to the requirement that the HTML file should
 work with plain `file://` URLs.
+
+## Licence
+
+The permissive WTFPL 2.0. The file `roofpig_and_three.min.js` and 
+the JQuery source file come with their own licence that you can find in their
+source code.
 

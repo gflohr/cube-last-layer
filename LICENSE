@@ -1,4 +1,4 @@
-This software is Copyright (c) 2021 by Guido Flohr.
+This software is Copyright (c) 2023 by Guido Flohr <guido.flohr@cantanea.com>.
 
 This is free software, licensed under:
 
@@ -17,3 +17,8 @@ This is free software, licensed under:
    TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 
   0. You just DO WHAT THE FUCK YOU WANT TO.
+
+===========================================================================
+
+The files roofpig_and_three.min.js and jquery-VERSION.min.js have their
+own license. See the contents of the files for details.
