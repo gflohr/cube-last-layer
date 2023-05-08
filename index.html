@@ -49,6 +49,11 @@ li {
 	margin-bottom: 1.5rem;
 }
 
+.case-detection {
+	margin-top: -1.5rem;
+	margin-bottom: 1.5rem;
+}
+
 .case-algorithm-container {
 	display: flex;
 	align-items: center;
@@ -275,6 +280,8 @@ const sections = [
 					{
 						label_en: 'Pi',
 						label_de: 'Pi',
+						detection_en: 'two headlights, two blinkers.',
+						detection_de: 'Zwei Scheinwerfer, zwei Blinker.',
 						probability: '2/13',
 						flipCorners: {
 							UFR: 2,
@@ -288,6 +295,25 @@ const sections = [
 							},
 						],
 					},
+					{
+						label: 'H',
+						probability: '1/13',
+						flipCorners: {
+							UFR: 2,
+							UFL: 1,
+							UBL: 2,
+							UBR: 1,
+						},
+						algorithms: [
+							{
+								notation: "F (R U R' U') (R U R' U') (R U R' U') F'",
+							},
+							{
+								notation: "(R U R' U) (R U' R' U) R U2 R'",
+								rotation: 1,
+							},
+						],
+					}
 				],
 			},
 			{
@@ -1325,6 +1351,19 @@ window.addEventListener('load', () => {
 		probability.appendChild(document.createTextNode('p = ' + llcase.probability));
 		container.appendChild(probability);
 
+		const detection = llcase[translatedName('detection')];
+		if (detection !== undefined) {
+			const detectionDiv = document.createElement('div');
+			container.appendChild(detectionDiv);
+
+			detectionDiv.appendChild(document.createTextNode(''));
+			detectionDiv.setAttribute('class', 'case-detection');
+			makeTranslatable(detectionDiv, {
+				label_en: 'Detection: ' + llcase.detection_en,
+				label_de: 'Erkennung: ' + llcase.detection_de,
+			});
+		}
+
 		stepContainer.appendChild(container);
 
 		for (const algorithm of llcase.algorithms) {
@@ -1336,7 +1375,11 @@ window.addEventListener('load', () => {
 			|| llcase.algorithms[0].canonical;
 
 		const defaultAlgorithms = llcase.algorithms.filter(a => a.canonical === defaultAlgorithm);
-		defaultAlgorithms[0].isDefault = true;
+		if (defaultAlgorithms.length) {
+			defaultAlgorithms[0].isDefault = true;
+		} else {
+			llcase.algorithms[0].isDefault = true;
+		}
 
 		for (const algorithm of llcase.algorithms) {
 			container.appendChild(addAlgorithm(llcase, algorithm, id, step));
