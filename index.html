@@ -437,7 +437,96 @@ const sections = [
 						],
 					}
 				],
-			}
+			},
+			{
+				label_en: 'Two Corners',
+				label_de: 'Zwei Ecken',
+				cases: [
+					{
+						label: 'L',
+						probability: '2/13',
+						detection_en: 'Two diagonally opposite corners are twisted.',
+						detection_de: 'Zwei diagonal gegenüberliegende Ecken sind verdreht.',
+						flipCorners: {
+							UFL: 1,
+							UBR: 2,
+						},
+						algorithms: [
+							{
+								notation: "(F R' F' r) (U R U' r')",
+								label_en: "Hedgeslammer and reverse sexy move, but the last R turns of both moves as a wide turn. Both U face stickers must be visible!",
+								label_de: "Hedgeslammer und umgekehrter Sexy Move, aber die jeweils letzte Drehung als weite Drehung ausführen. Beide U-Seiten-Sticker müssen sichtbar sein!",
+							},
+							{
+								notation: "(F' L F l') (U' L' U l)",
+								rotation: 1,
+								label_en: "Hedgeslammer and reverse sexy move, but the last l turns of both moves as a wide turn. One U face sticker on the right side pointing forward!",
+								label_de: "Hedgeslammer und umgekehrter Sexy Move, aber die jeweils letzte L-Drehung als weite Drehung ausführen. Ein U-Seiten-Sticker muss rechts nach vorne zeigen!",
+							},
+							{
+								notation: "x (R' U R D') (R' U' R D) x'",
+								label_en: "Both U face stickers must be visible!",
+								label_de: "Beide U-Seiten-Sticker müssen sichtbar sein!",
+							},
+							{
+								notation: "x (L U' L' D) (L U L' D') x'",
+								rotation: 1,
+								label_en: "One U face sticker on the right side pointing forward!",
+								label_de: "Ein U-Seiten-Sticker muss rechts nach vorne zeigen!",
+							},
+						],
+					},
+					{
+						label: 'T',
+						probability: '2/13',
+						detection_en: 'Two adjacent blinkers.',
+						detection_de: 'Zwei nebeneinanderliegende Blinker',
+						flipCorners: {
+							UFL: 1,
+							UBL: 2,
+						},
+						algorithms: [
+							{
+								notation: "(r U R' U') (r' F R F')",
+								label_en: "Sledgehammer and sexy move, but the last R turns of both moves as a wide turn.",
+								label_de: "Sledgehammer und Sexy Move, aber die jeweils letzte R-Drehung als weite Drehung ausführen.",
+							},
+							{
+								notation: "(l' U' L U) (l F' L' F)",
+								rotation: 2,
+								label_en: "Sledgehammer and sexy move, but the last L turns of both moves as a wide turn.",
+								label_de: "Sledgehammer und Sexy Move, aber die jeweils letzte L-Drehung als weite Drehung ausführen.",
+							},
+							{
+								notation: "x (R' U' L U) (R U' L' U) x'",
+								rotation: 2,
+							},
+							{
+								notation: "x (L U R' U') (L' U R U') x'",
+							},
+						],
+					},
+					{
+						label: 'U',
+						probability: '2/13',
+						detection_en: 'Two adjacent headlights.',
+						detection_de: 'Zwei nebeneinanderliegende Scheinwerfer',
+						flipCorners: {
+							UFR: 2,
+							UFL: 1,
+						},
+						algorithms: [
+							{
+								notation: "R2 (D R' U2 R) (D' R' U2 R')",
+							},
+							{
+								notation: "R2' D' (R U2 R') D (R U2 R)",
+								rotation: 2,
+							},
+						],
+					},
+				],
+			},
 		],
 	},
 	{
@@ -727,11 +816,6 @@ const sections = [
 		],
 	},
 ];
-
-var ids = {
-	nav: true,
-	main: true,
-};
 
 const cubeColors = {
 	U: 'rgb(255, 254, 85)',  // yellow
@@ -1300,14 +1384,10 @@ window.addEventListener('load', () => {
 			.replace(new RegExp('^-+'), '')
 			.replace(new RegExp('-+$'), '')
 			.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
-		var suffix = '';
-		while (ids.hasOwnProperty(id + '-' + suffix)) {
-			++suffix;
+		let suffix = '';
+		while (document.getElementById(id + suffix)) {
+			--suffix;
 		}
-		if (suffix) {
-			suffix = '-' + suffix;
-		}
-		ids[id + suffix] = true;
 
 		return id + suffix;
 	}
